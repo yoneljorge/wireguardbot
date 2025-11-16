@@ -1,0 +1,16 @@
+server:
+  port: 5000
+
+spring:
+  application:
+    name: agent
+
+eureka:
+  client:
+    register-with-eureka: true # Este servicio si debe registrarse
+    fetch-registry: true # Este servicio si debe buscar en el registro
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE}
+  instance:
+    prefer-ip-address: true
+    hostname: agent

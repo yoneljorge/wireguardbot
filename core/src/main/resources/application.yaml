@@ -29,7 +29,7 @@ telegram:
     client:
       token: ${TELEGRAM_BOT_CLIENT_TOKEN}
       username: ${TELEGRAM_BOT_CLIENT_USERNAME}
-      path: ${app.url}${server.servlet.context-path}/telegram/${telegram.bot.client.token}
+      path: ${app.url}${server.servlet.context-path}telegram/${telegram.bot.client.token}
     admin:
       token: ${TELEGRAM_BOT_ADMIN_TOKEN}
       username: ${TELEGRAM_BOT_ADMIN_USERNAME}
