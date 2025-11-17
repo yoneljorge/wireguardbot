@@ -14,3 +14,7 @@ eureka:
   instance:
     prefer-ip-address: true
     hostname: agent
+
+wireguard:
+  interface: ${WIREGUARD_INTERFACE:wg0} # Nombre de la interfaz WireGuard (por defecto wg0)
+  public-key: ${WIREGUARD_PUBLIC_KEY} # Clave pública de la interfaz WireGuard

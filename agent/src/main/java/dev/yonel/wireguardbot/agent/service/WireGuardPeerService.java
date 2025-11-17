@@ -1,0 +1,190 @@
+package dev.yonel.wireguardbot.agent.service;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import dev.yonel.wireguardbot.common.dtos.WireGuardPeer;
+
+/**
+ * Servicio para gestionar peers de WireGuard (agregar y eliminar)
+ * Utiliza el comando 'wg' para gestionar peers dinámicamente
+ */
+@Service
+public class WireGuardPeerService {
+
+    private static final Logger logger = LoggerFactory.getLogger(WireGuardPeerService.class);
+
+    @Value("${wireguard.interface:wg0}")
+    private String wireguardInterface;
+
+    /**
+     * Agrega un peer a la interfaz WireGuard
+     * 
+     * @param peer Información del peer a agregar
+     * @throws RuntimeException si hay un error al ejecutar el comando
+     */
+    public void addPeer(WireGuardPeer peer) {
+        if (peer.getPublicKey() == null || peer.getPublicKey().isEmpty()) {
+            throw new IllegalArgumentException("La clave pública del peer es requerida");
+        }
+        if (peer.getAllowedIp() == null || peer.getAllowedIp().isEmpty()) {
+            throw new IllegalArgumentException("La IP permitida del peer es requerida");
+        }
+
+        List<String> command = new ArrayList<>();
+        command.add("wg");
+        command.add("set");
+        command.add(wireguardInterface);
+        command.add("peer");
+        command.add(peer.getPublicKey());
+        command.add("allowed-ip");
+        command.add(peer.getAllowedIp());
+
+        // Agregar IPs permitidas adicionales si existen
+        if (peer.getAllowedIps() != null && peer.getAllowedIps().length > 0) {
+            for (String allowedIp : peer.getAllowedIps()) {
+                command.add("allowed-ip");
+                command.add(allowedIp);
+            }
+        }
+
+        // Agregar endpoint si está especificado
+        if (peer.getEndpoint() != null && !peer.getEndpoint().isEmpty()) {
+            command.add("endpoint");
+            command.add(peer.getEndpoint());
+        }
+
+        executeCommand(command);
+        logger.info("Peer agregado exitosamente. Clave pública: {}", peer.getPublicKey());
+    }
+
+    /**
+     * Elimina un peer de la interfaz WireGuard
+     * 
+     * @param publicKey Clave pública del peer a eliminar
+     * @throws RuntimeException si hay un error al ejecutar el comando
+     */
+    public void removePeer(String publicKey) {
+        if (publicKey == null || publicKey.isEmpty()) {
+            throw new IllegalArgumentException("La clave pública del peer es requerida");
+        }
+
+        List<String> command = new ArrayList<>();
+        command.add("wg");
+        command.add("set");
+        command.add(wireguardInterface);
+        command.add("peer");
+        command.add(publicKey);
+        command.add("remove");
+
+        executeCommand(command);
+        logger.info("Peer eliminado exitosamente. Clave pública: {}", publicKey);
+    }
+
+    /**
+     * Verifica si un peer existe en la interfaz WireGuard
+     * 
+     * @param publicKey Clave pública del peer a verificar
+     * @return true si el peer existe, false en caso contrario
+     */
+    public boolean peerExists(String publicKey) {
+        if (publicKey == null || publicKey.isEmpty()) {
+            return false;
+        }
+
+        try {
+            List<String> command = new ArrayList<>();
+            command.add("wg");
+            command.add("show");
+            command.add(wireguardInterface);
+            command.add("peers");
+
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.trim().equals(publicKey)) {
+                        process.waitFor();
+                        return true;
+                    }
+                }
+            }
+
+            int exitCode = process.waitFor();
+            return exitCode == 0;
+        } catch (Exception e) {
+            logger.error("Error al verificar si el peer existe", e);
+            return false;
+        }
+    }
+
+    /**
+     * Ejecuta un comando del sistema y maneja errores
+     * 
+     * @param command Lista de argumentos del comando
+     * @throws RuntimeException si el comando falla
+     */
+    private void executeCommand(List<String> command) {
+        try {
+            logger.debug("Ejecutando comando: {}", String.join(" ", command));
+
+            ProcessBuilder processBuilder = new ProcessBuilder(command);
+            processBuilder.redirectErrorStream(true);
+            Process process = processBuilder.start();
+
+            StringBuilder output = new StringBuilder();
+            StringBuilder errorOutput = new StringBuilder();
+
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(process.getInputStream()));
+                 BufferedReader errorReader = new BufferedReader(
+                    new InputStreamReader(process.getErrorStream()))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    output.append(line).append("\n");
+                }
+
+                while ((line = errorReader.readLine()) != null) {
+                    errorOutput.append(line).append("\n");
+                }
+            }
+
+            int exitCode = process.waitFor();
+
+            if (exitCode != 0) {
+                String errorMsg = errorOutput.length() > 0 
+                    ? errorOutput.toString() 
+                    : output.toString();
+                logger.error("Error al ejecutar comando. Código de salida: {}. Error: {}", 
+                    exitCode, errorMsg);
+                throw new RuntimeException(
+                    String.format("Error al ejecutar comando WireGuard. Código: %d. Error: %s", 
+                        exitCode, errorMsg));
+            }
+
+            if (output.length() > 0) {
+                logger.debug("Salida del comando: {}", output.toString());
+            }
+
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Comando interrumpido", e);
+        } catch (Exception e) {
+            logger.error("Error inesperado al ejecutar comando WireGuard", e);
+            throw new RuntimeException("Error al ejecutar comando WireGuard: " + e.getMessage(), e);
+        }
+    }
+}
+
