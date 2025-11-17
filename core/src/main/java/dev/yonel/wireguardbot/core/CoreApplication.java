@@ -26,7 +26,7 @@ public class CoreApplication {
 
         try {
             if (Files.exists(envPath)) {
-                logger.info("Cargando variables desde .env");
+                logger.info("Cargando variables desde .core.env");
                 Dotenv dotenv = Dotenv.configure()
                         .filename(".core.env")
                         .load();
@@ -34,8 +34,6 @@ public class CoreApplication {
                 dotenv.entries().forEach(entry -> {
                     System.setProperty(entry.getKey(), entry.getValue());
                 });
-            } else {
-                logger.info("Utilizando las variable de entornos.");
             }
         } catch (Exception e) {
             logger.error("Error al cargar las variables de entorno", e);

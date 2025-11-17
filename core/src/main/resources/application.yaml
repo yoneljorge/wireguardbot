@@ -53,3 +53,7 @@ telegram:
       token: ${TELEGRAM_BOT_ADMIN_TOKEN}
       username: ${TELEGRAM_BOT_ADMIN_USERNAME}
       path: ${app.url}${server.servlet.context-path}/telegram/${telegram.bot.admin.token}
+
+encryption:
+  service:
+    key: ${ENCRYPTION_KEY}

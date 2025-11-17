@@ -2,7 +2,9 @@ package dev.yonel.wireguardbot.db.entities;
 
 import java.time.LocalDate;
 
+import dev.yonel.wireguardbot.db.crypto.SensitiveDataConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -23,15 +25,24 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     @Column(unique = true)
     private Integer userId;
+
+    @Convert(converter = SensitiveDataConverter.class)
     private String name;
+
+    @Convert(converter = SensitiveDataConverter.class)
     @Column(unique = true)
     private String publicKey;
+
+    @Convert(converter = SensitiveDataConverter.class)
     @Column(unique = true)
     private String privateKey;
+
     @Column(unique = true)
     private Integer[] ipAssigned;
+
     private LocalDate paidUpTo;
     private Boolean active;
     private LocalDate createdAt;
