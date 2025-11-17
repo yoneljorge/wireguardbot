@@ -14,8 +14,8 @@
 		<module>common</module>
 		<module>core</module>
 		<module>agent</module>
+		<module>bot</module>
 		<module>db</module>
-		<module>telegram</module>
 	</modules>
 
 	<properties>
@@ -57,6 +57,19 @@
 				<groupId>org.telegram</groupId>
 				<artifactId>telegrambots-spring-boot-starter</artifactId>
 				<version>6.9.7.1</version>
+			</dependency>
+
+			<!-- Dependencias con Vulnerabilidades-->
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>4.5.14</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.thoughtworks.xstream</groupId>
+				<artifactId>xstream</artifactId>
+				<version>1.4.21</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
