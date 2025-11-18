@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import dev.yonel.wireguardbot.common.dtos.WireGuardKeyPair;
-import dev.yonel.wireguardbot.common.dtos.WireGuardPeer;
-import dev.yonel.wireguardbot.common.dtos.WireGuardPeerResponse;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardKeyPair;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeerResponse;
 
 @FeignClient(name = "agent", path = "/wireguard")
 public interface WireGuardAgentClient {

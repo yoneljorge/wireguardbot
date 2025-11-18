@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.common.dtos;
+package dev.yonel.wireguardbot.common.dtos.wireguard;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

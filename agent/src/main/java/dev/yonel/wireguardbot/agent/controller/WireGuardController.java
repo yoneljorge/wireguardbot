@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.yonel.wireguardbot.common.dtos.WireGuardKeyPair;
-import dev.yonel.wireguardbot.common.dtos.WireGuardPeer;
-import dev.yonel.wireguardbot.common.dtos.WireGuardPeerResponse;
 import dev.yonel.wireguardbot.agent.service.WireGuardKeyService;
 import dev.yonel.wireguardbot.agent.service.WireGuardPeerService;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardKeyPair;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeerResponse;
 
 @RestController
 @RequestMapping("/wireguard")

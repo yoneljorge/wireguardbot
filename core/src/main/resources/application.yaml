@@ -44,16 +44,30 @@ eureka:
     hostname: localhost
 
 telegram:
+  path: ${TELEGRAM_PATH}
+  chatid: ${TELEGRAM_CHATID}
+  groupid: ${TELEGRAM_GROUPID}
+  grouptitle: ${TELEGRAM_GROUPTITLE}
   bot:
     client:
       token: ${TELEGRAM_BOT_CLIENT_TOKEN}
       username: ${TELEGRAM_BOT_CLIENT_USERNAME}
-      path: ${app.url}${server.servlet.context-path}telegram/${telegram.bot.client.token}
+      path: ${app.url}${server.servlet.context-path}${telegram.path}/${telegram.bot.client.token}
     admin:
       token: ${TELEGRAM_BOT_ADMIN_TOKEN}
       username: ${TELEGRAM_BOT_ADMIN_USERNAME}
-      path: ${app.url}${server.servlet.context-path}/telegram/${telegram.bot.admin.token}
+      path: ${app.url}${server.servlet.context-path}${telegram.path}/${telegram.bot.admin.token}
 
 encryption:
   service:
     key: ${ENCRYPTION_KEY}
+
+scheduler:
+  autosendmessage:
+    appurl: ${telegram.bot.client.path}
+    active: ${SCHEDULER_AUTO_SEND_MESSAGE_ACTIVE}
+    chatid: ${telegram.chatid}
+    time: ${SCHEDULER_AUTO_SEND_MESSAGE_TIME:50}
+    message: ${SCHEDULER_AUTO_SEND_MESSAGE_MESSAGE}
+
+

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import dev.yonel.wireguardbot.common.dtos.WireGuardPeer;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
 
 /**
  * Servicio para gestionar peers de WireGuard (agregar y eliminar)

@@ -10,7 +10,7 @@ import org.bouncycastle.crypto.params.X25519PrivateKeyParameters;
 import org.bouncycastle.crypto.params.X25519PublicKeyParameters;
 import org.springframework.stereotype.Service;
 
-import dev.yonel.wireguardbot.common.dtos.WireGuardKeyPair;
+import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardKeyPair;
 
 /**
  * Servicio para generar pares de claves WireGuard (pública y privada)
