@@ -1,0 +1,87 @@
+{"properties": [
+  {
+    "name": "telegram.path",
+    "type": "java.lang.String",
+    "description": "Base path for Telegram webhooks."
+  },
+  {
+    "name": "telegram.chatid",
+    "type": "java.lang.Long",
+    "description": "Chat ID for the main Telegram channel or group."
+  },
+  {
+    "name": "telegram.groupid",
+    "type": "java.lang.Long",
+    "description": "Group ID for a specific Telegram group."
+  },
+  {
+    "name": "telegram.grouptitle",
+    "type": "java.lang.String",
+    "description": "Title of the Telegram group."
+  },
+  {
+    "name": "telegram.bot.client.token",
+    "type": "java.lang.String",
+    "description": "API token for the client Telegram bot."
+  },
+  {
+    "name": "telegram.bot.client.username",
+    "type": "java.lang.String",
+    "description": "Username for the client Telegram bot."
+  },
+  {
+    "name": "telegram.bot.client.path",
+    "type": "java.lang.String",
+    "description": "Webhook path for the client Telegram bot."
+  },
+  {
+    "name": "telegram.bot.admin.token",
+    "type": "java.lang.String",
+    "description": "API token for the admin Telegram bot."
+  },
+  {
+    "name": "telegram.bot.admin.username",
+    "type": "java.lang.String",
+    "description": "Username for the admin Telegram bot."
+  },
+  {
+    "name": "telegram.bot.admin.path",
+    "type": "java.lang.String",
+    "description": "Webhook path for the admin Telegram bot."
+  },
+  {
+    "name": "app.url",
+    "type": "java.lang.String",
+    "description": "Domain URL of the application."
+  },
+  {
+    "name": "encryption.service.key",
+    "type": "java.lang.String",
+    "description": "Encryption key for sensitive data."
+  },
+  {
+    "name": "scheduler.autosendmessage.appurl",
+    "type": "java.lang.String",
+    "description": "URL of the application that will send the webhook."
+  },
+  {
+    "name": "scheduler.autosendmessage.active",
+    "type": "java.lang.String",
+    "description": "Indicates if the auto-send message scheduler is active."
+  },
+  {
+    "name": "scheduler.autosendmessage.chatid",
+    "type": "java.lang.String",
+    "description": "Chat ID for the Telegram channel or group where messages will be sent."
+  },
+  {
+    "name": "scheduler.autosendmessage.time",
+    "type": "java.lang.String",
+    "description": "Time interval in seconds between message sends."
+  },
+  {
+    "name": "scheduler.autosendmessage.message",
+    "type": "java.lang.String",
+    "description": "Message content that will be sent automatically."
+  }
+]}
