@@ -2,6 +2,7 @@ package dev.yonel.wireguardbot.db.entities;
 
 import java.time.LocalDate;
 
+import dev.yonel.wireguardbot.common.enums.TypeRol;
 import dev.yonel.wireguardbot.db.crypto.SensitiveDataConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -27,10 +28,16 @@ public class UserEntity {
     private Long id;
 
     @Column(unique = true)
-    private Integer userId;
+    private Long userId;
 
     @Convert(converter = SensitiveDataConverter.class)
-    private String name;
+    private String userName;
+
+    @Convert(converter = SensitiveDataConverter.class)
+    private String firstName;
+
+    @Convert(converter = SensitiveDataConverter.class)
+    private String lastName;
 
     @Convert(converter = SensitiveDataConverter.class)
     @Column(unique = true)
@@ -46,4 +53,5 @@ public class UserEntity {
     private LocalDate paidUpTo;
     private Boolean active;
     private LocalDate createdAt;
+    private TypeRol typeRol;
 }

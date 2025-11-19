@@ -9,24 +9,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import dev.yonel.wireguardbot.common.enums.TypeCustomKeyboardMarkup;
-import dev.yonel.wireguardbot.common.enums.ParseMode;
+import dev.yonel.wireguardbot.common.enums.TypeParseMode;
+import dev.yonel.wireguardbot.common.enums.TypeSendExecution;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class ResponseBody {
+
+    private Integer messageId;
+    private Long chatid;
+    private Long userid;
     private String response;
-    private String chatid;
+    private int updateid;
+    
+    private TypeParseMode parseMode;
+    private TypeSendExecution typeSendExecution;
+
     private List<Button> buttons;
     private TypeCustomKeyboardMarkup typeKeyboard;
+
+    private String fileDocument;
     @Builder.Default
     private boolean removable = false;
-    private ParseMode parseMode;
-
-    public ResponseBody(String response, String chatid) {
-        this.response = response;
-        this.chatid = chatid;
-    }
 }

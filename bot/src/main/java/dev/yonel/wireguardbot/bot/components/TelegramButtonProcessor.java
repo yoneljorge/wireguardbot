@@ -15,7 +15,7 @@ import dev.yonel.wireguardbot.bot.queue.MensajeColaService;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
-import dev.yonel.wireguardbot.common.services.message_relay.MessageRelayService;
+import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

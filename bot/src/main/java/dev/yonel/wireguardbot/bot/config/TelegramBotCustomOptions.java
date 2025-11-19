@@ -10,15 +10,4 @@ public class TelegramBotCustomOptions extends DefaultBotOptions {
         setGetUpdatesTimeout(100);
         setGetUpdatesLimit(50);
     }
-
-    /*
-     * // Puedes añadir métodos adicionales para configuraciones personalizadas
-     * public void configureForProduction() {
-     * setBaseUrl("https://api.telegram.org");
-     * }
-     * 
-     * public void configureForDevelopment() {
-     * setBaseUrl("https://your-dev-environment-url.com");
-     * }
-     */
 }

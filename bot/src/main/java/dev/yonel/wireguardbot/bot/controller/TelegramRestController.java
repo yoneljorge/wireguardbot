@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
+import dev.yonel.wireguardbot.bot.properties.TelegramBotAdminProperties;
+import dev.yonel.wireguardbot.bot.properties.TelegramBotClientProperties;
 import dev.yonel.wireguardbot.bot.queue.IncomingMessageTelegram;
 import dev.yonel.wireguardbot.bot.queue.MensajeColaService;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotAdminProperties;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotClientProperties;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

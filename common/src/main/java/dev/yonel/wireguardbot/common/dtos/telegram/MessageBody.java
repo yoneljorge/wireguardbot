@@ -6,30 +6,68 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Optional;
+
+import dev.yonel.wireguardbot.common.enums.TypeMessage;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
+
 
 @Getter
 @Setter
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class MessageBody {
+    /*
+     * Id del chat, puede ser un grupo o el chat como tal del usuario.
+     */
     private Long chatid;
+    /*
+     * Id del mensaje
+     */
     private Integer messageId;
+    /*
+     * Id del usuario
+     */
     private Long userid;
-    private Integer updateid;
+    /*
+     * Id del update que se está recibiendo
+     */
+    private int updateid;
     private String firstName;
     private String lastName;
     private String userName;
-    private String telefono;
     private String message;
-    private String fileUrl;
+    private String telefono;
     @Builder.Default
-    private boolean isGroup = false;
-    private String groupTitle;
+    private boolean group = false;
     @Builder.Default
-    private boolean isNewUserInGroup = false;
+    private String groupTitle = "";
+    @Builder.Default
+    private boolean newUserInGroup = false;
     @Builder.Default
     private boolean isBot = false;
+    // Datos de cuando se presiona un boton
+    private String callbackData;
+    private TypeMessage typeMessage;
+    private Optional<byte[]> image;
+    private String fileUrl;
     private TypeWebhookTelegramBot typeBot;
+
+    public String getAlias() {
+
+        if (this.userName != null && !this.userName.trim().isEmpty()) {
+            return this.userName;
+        }
+
+        if (this.firstName != null && !this.firstName.trim().isEmpty()) {
+            return this.firstName;
+        }
+
+        if (this.lastName != null && !this.firstName.trim().isEmpty()) {
+            return this.lastName;
+        }
+
+        return "";
+    }
 }

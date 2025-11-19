@@ -5,10 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import dev.yonel.wireguardbot.bot.properties.TelegramBotAdminProperties;
+import dev.yonel.wireguardbot.bot.properties.TelegramBotClientProperties;
 import dev.yonel.wireguardbot.bot.service.WebhookBotAdminImpl;
 import dev.yonel.wireguardbot.bot.service.WebhookBotClientImpl;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotAdminProperties;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotClientProperties;
 
 
 @Configuration

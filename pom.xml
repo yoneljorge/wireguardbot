@@ -16,6 +16,7 @@
 		<module>agent</module>
 		<module>bot</module>
 		<module>db</module>
+		<module>message-manager</module>
 	</modules>
 
 	<properties>
@@ -65,6 +66,13 @@
 				<version>6.9.7.1</version>
 			</dependency>
 
+			<!-- Simmetrics-->
+			<dependency>
+				<groupId>com.github.mpkorstanje</groupId>
+				<artifactId>simmetrics-core</artifactId>
+				<version>4.1.1</version>
+			</dependency>
+			
 			<!-- Dependencias con Vulnerabilidades-->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>

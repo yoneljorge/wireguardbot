@@ -2,21 +2,16 @@ package dev.yonel.wireguardbot.common.events;
 
 import java.util.EventObject;
 
-public class MessageRelayToDeleteMessageEvent extends EventObject {
-    private final Long chatId;
-    private final int messageId;
+import lombok.Getter;
 
-    public MessageRelayToDeleteMessageEvent(Object source, Long chatId, int messageId) {
+@Getter
+public class MessageRelayToDeleteMessageEvent extends EventObject {
+    private long chatId;
+    private int messageId;
+    
+    public MessageRelayToDeleteMessageEvent(Object source, long chatId, int messageId){
         super(source);
         this.chatId = chatId;
         this.messageId = messageId;
-    }
-
-    public Long getChatId() {
-        return chatId;
-    }
-
-    public int getMessageId() {
-        return messageId;
     }
 }

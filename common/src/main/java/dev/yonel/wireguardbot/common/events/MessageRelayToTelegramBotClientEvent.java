@@ -4,16 +4,14 @@ import java.util.EventObject;
 import java.util.List;
 
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
+import lombok.Getter;
 
+@Getter
 public class MessageRelayToTelegramBotClientEvent extends EventObject {
-    private final List<ResponseBody> responses;
+    private List<ResponseBody> responses;
 
-    public MessageRelayToTelegramBotClientEvent(Object source, List<ResponseBody> responses) {
-        super(source);
-        this.responses = responses;
-    }
-
-    public List<ResponseBody> getResponses() {
-        return responses;
-    }
+	public MessageRelayToTelegramBotClientEvent(Object source, List<ResponseBody> responses) {
+		super(source);
+		this.responses = responses;
+	}
 }

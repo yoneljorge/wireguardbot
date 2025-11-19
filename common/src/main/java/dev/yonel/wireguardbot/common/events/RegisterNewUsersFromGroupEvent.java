@@ -4,16 +4,14 @@ import java.util.EventObject;
 import java.util.List;
 
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
+import lombok.Getter;
 
+@Getter
 public class RegisterNewUsersFromGroupEvent extends EventObject {
-    private final List<MessageBody> users;
+    private final List<MessageBody> newUsers;
 
-    public RegisterNewUsersFromGroupEvent(Object source, List<MessageBody> users) {
+    public RegisterNewUsersFromGroupEvent(Object source, List<MessageBody> newUsers){
         super(source);
-        this.users = users;
-    }
-
-    public List<MessageBody> getUsers() {
-        return users;
+        this.newUsers = newUsers;
     }
 }

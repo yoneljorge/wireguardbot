@@ -1,15 +1,22 @@
 package dev.yonel.wireguardbot.common.services;
 
+import java.util.Optional;
+
 import dev.yonel.wireguardbot.common.dtos.UserDto;
+import dev.yonel.wireguardbot.common.exceptions.DuplicateUserException;
+import dev.yonel.wireguardbot.common.exceptions.NotExistsException;
 
 public interface UserService {
 
-    UserDto createUser(UserDto user);
+    Optional<UserDto> createUser(UserDto user) throws DuplicateUserException,IllegalArgumentException, InternalError;
 
-    UserDto getUser();
+    Optional<UserDto> getUser(Long id) throws IllegalArgumentException;
 
-    UserDto updateUser();
+    Optional<UserDto> getUserByUserId(Long userId) throws IllegalArgumentException;
 
-    boolean deleteUser();
+    Optional<UserDto> updateUser(UserDto user) throws NotExistsException;
 
+    void deleteUser(UserDto user);
+
+    boolean userExistsByUserId(Integer userId);
 }

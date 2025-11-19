@@ -24,15 +24,15 @@ import dev.yonel.wireguardbot.bot.components.TelegramPlatform;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageReplyMarkup;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageText;
 import dev.yonel.wireguardbot.bot.components.custom.CustomSendMessage;
+import dev.yonel.wireguardbot.bot.properties.TelegramBotAdminProperties;
+import dev.yonel.wireguardbot.bot.properties.TelegramBotClientProperties;
+import dev.yonel.wireguardbot.bot.properties.TelegramBotPropertiesInterface;
 import dev.yonel.wireguardbot.common.context.SessionManager;
 import dev.yonel.wireguardbot.common.context.UserSessionContext;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
 import dev.yonel.wireguardbot.common.properties.SchedulerAutoSendMessageProperties;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotAdminProperties;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotClientProperties;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotProperties;
 import dev.yonel.wireguardbot.common.scheduler.send_auto_message.SendAutoMessageToTelegramBotClientScheduler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,7 +53,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
     private final String BOT_USERNAME;
     private final String BOT_PATH;
 
-    public BaseTelegramWebhookBot(TelegramBotProperties telegramBotProperties) {
+    public BaseTelegramWebhookBot(TelegramBotPropertiesInterface telegramBotProperties) {
         super(new TelegramBotCustomOptions(), telegramBotProperties.getToken());
 
         this.BOT_TOKEN = telegramBotProperties.getToken();

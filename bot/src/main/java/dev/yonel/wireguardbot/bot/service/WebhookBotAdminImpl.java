@@ -7,10 +7,10 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import dev.yonel.wireguardbot.bot.properties.TelegramBotAdminProperties;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotAdminEvent;
-import dev.yonel.wireguardbot.common.properties.telegram.TelegramBotAdminProperties;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
