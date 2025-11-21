@@ -1,5 +1,5 @@
 
-package dev.yonel.wireguardbot.message_manager.command.commands;
+package dev.yonel.wireguardbot.message_manager.command.commands.general;
 
 import java.util.List;
 
@@ -13,12 +13,12 @@ import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeCustomButton;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
 import dev.yonel.wireguardbot.common.utils.HTMLMessageBuilder;
-import dev.yonel.wireguardbot.message_manager.command.Command;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
+import dev.yonel.wireguardbot.message_manager.command.interfaces.GeneralCommandInterface;
 
 @Lazy
 @Component
-public class MenuCommand extends CommandBase implements Command {
+public class MenuCommand extends CommandBase implements GeneralCommandInterface {
 
     @Override
     public List<ResponseBody> execute(MessageBody message, UserSessionContext context) throws Throwable {

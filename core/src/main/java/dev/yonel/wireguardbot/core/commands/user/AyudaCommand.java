@@ -1,5 +1,5 @@
 
-package dev.yonel.wireguardbot.message_manager.command.commands.user;
+package dev.yonel.wireguardbot.core.commands.user;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +15,8 @@ import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
 import dev.yonel.wireguardbot.common.utils.Match;
-import dev.yonel.wireguardbot.message_manager.command.Command;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
+import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.messages.AyudaMessage;
 import dev.yonel.wireguardbot.message_manager.messages.NoEntendiMessages;
 

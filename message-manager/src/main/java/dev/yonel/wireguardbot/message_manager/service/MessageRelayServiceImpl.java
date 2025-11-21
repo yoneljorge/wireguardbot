@@ -19,9 +19,9 @@ import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
 import dev.yonel.wireguardbot.common.services.UserService;
 import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
-import dev.yonel.wireguardbot.message_manager.command.Command;
-import dev.yonel.wireguardbot.message_manager.command.CommandDetector;
-import dev.yonel.wireguardbot.message_manager.command.CommandRegistryUser;
+import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
+import dev.yonel.wireguardbot.message_manager.command.registry.UserCommandRegistry;
+import dev.yonel.wireguardbot.message_manager.command.utils.CommandDetector;
 import lombok.extern.slf4j.Slf4j;
 
 @Lazy
@@ -34,7 +34,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
     @Autowired
     private CommandDetector commandDetector;
     @Autowired
-    private CommandRegistryUser commandRegistryUser;
+    private UserCommandRegistry userCommandRegistry;
     @Autowired
     private ApplicationEventPublisher publisher;
 
@@ -103,7 +103,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
     }
 
     private List<ResponseBody> handleNewUser(MessageBody messageBody, UserSessionContext context) throws Throwable {
-        Command defaultCommand = commandRegistryUser.getCommands().getFirst();
+        Command defaultCommand = userCommandRegistry.getCommands().getFirst();
         return defaultCommand.execute(messageBody, context);
     }
 

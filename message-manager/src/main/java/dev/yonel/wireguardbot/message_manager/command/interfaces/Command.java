@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.message_manager.command;
+package dev.yonel.wireguardbot.message_manager.command.interfaces;
 
 
 import java.util.List;

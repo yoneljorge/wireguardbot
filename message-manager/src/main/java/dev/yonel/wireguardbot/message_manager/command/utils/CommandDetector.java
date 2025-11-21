@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.message_manager.command;
+package dev.yonel.wireguardbot.message_manager.command.utils;
 
 import java.util.Optional;
 
@@ -14,7 +14,12 @@ import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.enums.TypeRol;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.services.UserService;
-import dev.yonel.wireguardbot.message_manager.command.commands.ErrorCommand;
+import dev.yonel.wireguardbot.message_manager.command.commands.general.ErrorCommand;
+import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
+import dev.yonel.wireguardbot.message_manager.command.registry.AdminCommandRegistry;
+import dev.yonel.wireguardbot.message_manager.command.registry.ComercialCommandRegistry;
+import dev.yonel.wireguardbot.message_manager.command.registry.GeneralCommandRegistry;
+import dev.yonel.wireguardbot.message_manager.command.registry.UserCommandRegistry;
 import lombok.extern.slf4j.Slf4j;
 
 @Lazy
@@ -29,17 +34,17 @@ public class CommandDetector {
     private ErrorCommand errorCommand;
 
     private static final StringMetric metric = StringMetrics.levenshtein();
-    private final CommandRegistryUser commandRegistryUser;
-    private final CommandRegistryAdmin commandRegistryAdmin;
-    private final CommandRegistryComercial commandRegistryComercial;
-    private final CommandRegistryGeneral commandRegistryGeneral;
+    private final UserCommandRegistry userCommandRegistry;
+    private final AdminCommandRegistry adminCommandRegistry;
+    private final ComercialCommandRegistry comercialCommandRegistry;
+    private final GeneralCommandRegistry generalCommandRegistry;
 
-    public CommandDetector(CommandRegistryUser commandRegistryUser, CommandRegistryAdmin commandRegistryAdmin,
-            CommandRegistryComercial commandRegistryComercial, CommandRegistryGeneral commandRegistryGeneral) {
-        this.commandRegistryUser = commandRegistryUser;
-        this.commandRegistryAdmin = commandRegistryAdmin;
-        this.commandRegistryComercial = commandRegistryComercial;
-        this.commandRegistryGeneral = commandRegistryGeneral;
+    public CommandDetector(UserCommandRegistry userCommandRegistry, AdminCommandRegistry adminCommandRegistry,
+            ComercialCommandRegistry comercialCommandRegistry, GeneralCommandRegistry generalCommandRegistry) {
+        this.userCommandRegistry = userCommandRegistry;
+        this.adminCommandRegistry = adminCommandRegistry;
+        this.comercialCommandRegistry = comercialCommandRegistry;
+        this.generalCommandRegistry = generalCommandRegistry;
     }
 
     public Command findBestMatch(MessageBody messageBody, UserSessionContext context) {
@@ -73,7 +78,7 @@ public class CommandDetector {
                  * administrador
                  */
                 if (messageBody.getTypeBot() == TypeWebhookTelegramBot.ADMIN && usuario.getTypeRol() == TypeRol.ADMIN) {
-                    for (Command command : commandRegistryAdmin.getCommands()) {
+                    for (Command command : adminCommandRegistry.getCommands()) {
                         if (command.getName().equals(inputTrim)) {
                             bestMatch = command;
                             break;
@@ -87,11 +92,11 @@ public class CommandDetector {
                 }
 
                 /*
-                 * Verificamos si la petición viene del bot recogedor y el usuario es comercial o administrador.
+                 * Verificamos si la petición viene del bot cliente y el usuario es comercial o administrador.
                  */
                 if ((usuario.getTypeRol() == TypeRol.COMERCIAL || usuario.getTypeRol() == TypeRol.ADMIN)
                         && messageBody.getTypeBot() == TypeWebhookTelegramBot.CLIENT) {
-                    for (Command command : commandRegistryComercial.getCommands()) {
+                    for (Command command : comercialCommandRegistry.getCommands()) {
                         if (command.getName().equals(inputTrim)) {
                             bestMatch = command;
                             break;
@@ -109,10 +114,10 @@ public class CommandDetector {
 
 
             /*
-             * Solo recibimos peticiones del bot recogedor
+             * Solo recibimos peticiones del bot cliente
              */
             if (messageBody.getTypeBot() == TypeWebhookTelegramBot.CLIENT) {
-                for (Command command : commandRegistryUser.getCommands()) {
+                for (Command command : userCommandRegistry.getCommands()) {
                     if (command.getName().equals(inputTrim)) {
                         bestMatch = command;
                         break;
@@ -125,7 +130,7 @@ public class CommandDetector {
                 }
             }
 
-            for (Command command : commandRegistryGeneral.getCommands()) {
+            for (Command command : generalCommandRegistry.getCommands()) {
                     if (command.getName().equals(inputTrim)) {
                         bestMatch = command;
                         break;
@@ -138,7 +143,7 @@ public class CommandDetector {
                 }
 
             if (bestMatch == null) {
-                return commandRegistryUser.getCommands().getFirst();
+                return userCommandRegistry.getCommands().getFirst();
             }
 
             return bestMatch;
@@ -154,7 +159,7 @@ public class CommandDetector {
             Command bestMatch = null;
             double maxSimilarity = 0.0;
 
-            for (Command command : commandRegistryUser.getCommands()) {
+            for (Command command : userCommandRegistry.getCommands()) {
                 double similarity = getMaxSimilarity(inputTrim, command.getAliases());
                 if (similarity > maxSimilarity && similarity > 0.65) {
                     maxSimilarity = similarity;
@@ -163,7 +168,7 @@ public class CommandDetector {
             }
 
             if (bestMatch == null) {
-                return commandRegistryUser.getCommands().getFirst();
+                return userCommandRegistry.getCommands().getFirst();
             }
 
             return bestMatch;

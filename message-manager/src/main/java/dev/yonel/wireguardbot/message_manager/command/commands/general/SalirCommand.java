@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import dev.yonel.wireguardbot.common.context.UserSessionContext;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
-import dev.yonel.wireguardbot.message_manager.command.Command;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
+import dev.yonel.wireguardbot.message_manager.command.interfaces.GeneralCommandInterface;
 
 @Component
-public class SalirCommand extends CommandBase implements Command {
+public class SalirCommand extends CommandBase implements GeneralCommandInterface {
 
     @Override
     public List<ResponseBody> execute(MessageBody body, UserSessionContext context) {

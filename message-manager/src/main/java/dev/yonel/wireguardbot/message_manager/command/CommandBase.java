@@ -8,6 +8,10 @@ import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 
 public class CommandBase {
 
+    protected CommandBase(){
+        initialize();
+    }
+    
     private List<ResponseBody> responses;
 
     protected void initialize() {
