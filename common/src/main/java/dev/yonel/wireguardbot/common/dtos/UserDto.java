@@ -1,7 +1,7 @@
 package dev.yonel.wireguardbot.common.dtos;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.List;
 
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.enums.TypeRol;
@@ -17,20 +17,17 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
-    private Long id;
-    private Long userId;
-    private String userName;
-    private String firstName;
-    private String lastName;
-    private String publicKey;
-    private String privateKey;
-    private Integer[] ipAssigned;
-    private LocalDate paidUpTo;
-    private Boolean active;
-    private LocalDate createdAt;
-    private TypeRol typeRol;
+	private Long id;
+	private Long userId;
+	private String userName;
+	private String firstName;
+	private String lastName;
+	private List<PeerDto> peers;
+	private TypeRol typeRol;
+	private LocalDate activedFreePlan;
+	private boolean freePlanEnded;
 
-    public UserDto(MessageBody body) {
+	public UserDto(MessageBody body) {
 
 		this.setUserId(body.getUserid());
 
@@ -55,28 +52,12 @@ public class UserDto {
 		this.setTypeRol(TypeRol.USUARIO);
 	}
 
-    public String getIpString() {
-        String ip = "";
-        for (int i : this.ipAssigned) {
-            ip = ip + i;
-        }
-        return ip;
-    }
-
-    public void setIpString(String ipString) {
-
-        if (ipString == null || ipString.isEmpty()) {
-            throw new IllegalArgumentException("La cadena IP no puede ser nula o vacía.");
-        }
-
-        String[] parts = ipString.split("\\.");
-
-        if (parts.length != 4) {
-            throw new IllegalArgumentException("El formato de la IP debe tener 4 segmentos (ej: X.X.X.X).");
-        }
-
-        this.ipAssigned = Arrays.stream(parts)
-                .map(Integer::valueOf)
-                .toArray(Integer[]::new);
-    }
+	/**
+	 * Agregamos un nuevo peer.
+	 * 
+	 * @param peer el peer que se desea agregar.
+	 */
+	public void setPeer(PeerDto peer) {
+		this.peers.add(peer);
+	}
 }

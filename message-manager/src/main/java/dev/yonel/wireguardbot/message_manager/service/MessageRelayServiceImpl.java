@@ -17,7 +17,7 @@ import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeSendExecution;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
-import dev.yonel.wireguardbot.common.services.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.command.registry.UserCommandRegistry;
@@ -138,7 +138,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
             messageBody.setCallbackData(callbackData.substring(5));
         }
 
-        if (message.toLowerCase().startsWith("reset") || message.toLowerCase().startsWith("ayuda")) {
+        if (message.toLowerCase().startsWith("reset") ||message.toLowerCase().startsWith("ayuda")) {
             context.getBotSession(messageBody.getTypeBot()).reset();
         }
     }

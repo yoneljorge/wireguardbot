@@ -18,7 +18,7 @@ import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
 import dev.yonel.wireguardbot.common.events.RegisterNewUsersFromGroupEvent;
 import dev.yonel.wireguardbot.common.events.SendToStartCommandEvent;
-import dev.yonel.wireguardbot.common.services.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.message_manager.messages.BienvenidaMessage;
 import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotClientEvent;
 import lombok.extern.slf4j.Slf4j;

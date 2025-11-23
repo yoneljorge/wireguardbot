@@ -1,13 +1,19 @@
 package dev.yonel.wireguardbot.db.services;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
 
+import dev.yonel.wireguardbot.common.dtos.IpDto;
+import dev.yonel.wireguardbot.common.dtos.PeerDto;
 import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.exceptions.DuplicateUserException;
 import dev.yonel.wireguardbot.common.exceptions.NotExistsException;
-import dev.yonel.wireguardbot.common.services.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.db.entities.IpEntity;
+import dev.yonel.wireguardbot.db.entities.PeerEntity;
 import dev.yonel.wireguardbot.db.entities.UserEntity;
 import dev.yonel.wireguardbot.db.repositories.UserRepository;
 
@@ -100,35 +106,77 @@ public class UserServiceImpl implements UserService {
 
     private UserEntity convertToEntity(UserDto user) {
         return UserEntity.builder()
+                .id(user.getId())
                 .userId(user.getUserId())
                 .userName(user.getUserName())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .publicKey(user.getPublicKey())
-                .privateKey(user.getPrivateKey())
-                .ipAssigned(user.getIpAssigned())
-                .paidUpTo(user.getPaidUpTo())
-                .active(user.getActive())
-                .createdAt(user.getCreatedAt())
                 .typeRol(user.getTypeRol())
+                .activedFreePlan(user.getActivedFreePlan())
+                .freePlanEnded(user.isFreePlanEnded())
+                .peers(convertPeersToEntitis(user))
                 .build();
     }
 
-    private UserDto convertToDto(UserEntity entity) {
+    private UserDto convertToDto(UserEntity user) {
         return UserDto.builder()
-                .id(entity.getId())
-                .userId(entity.getUserId())
-                .userName(entity.getUserName())
-                .firstName(entity.getFirstName())
-                .lastName(entity.getLastName())
-                .publicKey(entity.getPublicKey())
-                .privateKey(entity.getPrivateKey())
-                .ipAssigned(entity.getIpAssigned())
-                .paidUpTo(entity.getPaidUpTo())
-                .active(entity.getActive())
-                .createdAt(entity.getCreatedAt())
-                .typeRol(entity.getTypeRol())
+                .id(user.getId())
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .typeRol(user.getTypeRol())
+                .activedFreePlan(user.getActivedFreePlan())
+                .freePlanEnded(user.getFreePlanEnded())
+                .peers(convertPeersToDto(user))
                 .build();
+    }
+
+    private List<PeerEntity> convertPeersToEntitis(UserDto user) {
+        List<PeerEntity> peers = new ArrayList<>();
+        for (PeerDto p : user.getPeers()) {
+
+            PeerEntity peer = PeerEntity.builder()
+                    .id(p.getId())
+                    .privateKey(p.getPrivateKey())
+                    .publicKey(p.getPublicKey())
+                    .createdAt(p.getCreatedAt())
+                    .paidUpTo(p.getPaidUpTo())
+                    .active(p.isActive())
+                    .build();
+
+            IpEntity ip = new IpEntity();
+            ip.setId(p.getIp().getId());
+            ip.setIpAddress(p.getIp().getIpString());
+
+            peer.setIp(ip);
+
+            peers.add(peer);
+        }
+        return peers;
+    }
+
+    private List<PeerDto> convertPeersToDto(UserEntity user) {
+        List<PeerDto> peers = new ArrayList<>();
+        for (PeerEntity p : user.getPeers()) {
+            PeerDto dto = PeerDto.builder()
+                    .id(p.getId())
+                    .privateKey(p.getPrivateKey())
+                    .publicKey(p.getPublicKey())
+                    .createdAt(p.getCreatedAt())
+                    .paidUpTo(p.getPaidUpTo())
+                    .active(p.getActive())
+                    .build();
+
+            IpDto ip = new IpDto();
+            ip.setId(p.getIp().getId());
+            ip.setIpString(p.getIp().getIpAddress());
+
+            dto.setIp(ip);
+
+            peers.add(dto);
+        }
+        return peers;
     }
 
     @Override

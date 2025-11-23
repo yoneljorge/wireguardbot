@@ -69,4 +69,9 @@ scheduler:
     time: ${SCHEDULER_AUTO_SEND_MESSAGE_TIME:50}
     message: ${SCHEDULER_AUTO_SEND_MESSAGE_MESSAGE}
 
-
+wireguard:
+  server:
+    name: ${WIREGUARD_SERVER_NAME}
+    address: ${WIREGUARD_SERVER_ADDRESS}
+    port: ${WIREGUARD_SERVER_PORT}
+    publicKey: ${WIREGUARD_SERVER_PUBLIC_KEY}

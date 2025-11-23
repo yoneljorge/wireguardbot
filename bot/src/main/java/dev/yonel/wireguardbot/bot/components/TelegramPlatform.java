@@ -60,7 +60,7 @@ public class TelegramPlatform {
 
 	}
 
-	public List<CustomSendMessage> onReceivedEventFromMessageRelay(List<ResponseBody> responses) {
+	public List<Object> onReceivedEventFromMessageRelay(List<ResponseBody> responses) {
 		try {
 			return messageProcessor.processResponseFromMessageRelay(responses);
 		} catch (Exception e) {

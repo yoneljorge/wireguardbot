@@ -13,7 +13,7 @@ import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.enums.TypeRol;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
-import dev.yonel.wireguardbot.common.services.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.message_manager.command.commands.general.ErrorCommand;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.command.registry.AdminCommandRegistry;

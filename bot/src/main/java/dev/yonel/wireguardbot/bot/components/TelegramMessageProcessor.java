@@ -49,7 +49,7 @@ public class TelegramMessageProcessor {
         for (ResponseBody resp : responses) {
             messages.add(messageBuilder.buildSendMessage(resp));
             // FIXME: solo para pruebas
-            //System.out.println(resp.getResponse());
+            // System.out.println(resp.getResponse());
         }
 
         MensajeColaService.removeMensajesProcesados(bot, String.valueOf(messageBody.getUserid()),
@@ -84,15 +84,21 @@ public class TelegramMessageProcessor {
         return messages;
     }
 
-    public List<CustomSendMessage> processResponseFromMessageRelay(List<ResponseBody> responses) {
+    @Autowired
+    private MessageTypeSelector messageTypeSelector;
+
+    public List<Object> processResponseFromMessageRelay(List<ResponseBody> responses) {
         if (responses == null || responses.isEmpty()) {
             log.warn("No se recibió respuesta válida para el mensaje.");
             return null;
         }
-        List<CustomSendMessage> messages = new ArrayList<>();
+        
+        List<Object> messages = new ArrayList<>();
 
         for (ResponseBody resp : responses) {
-            messages.add(messageBuilder.buildSendMessage(resp));
+            Object message = messageTypeSelector.selectAndBuild(resp);
+            if(message != null){}
+            messages.add(message);
         }
 
         return messages;

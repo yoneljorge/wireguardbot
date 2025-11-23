@@ -18,12 +18,12 @@ public interface WireGuardAgentClient {
     @GetMapping("/generate-keys")
     ResponseEntity<WireGuardKeyPair> generateKeyPair();
 
-    @PostMapping("/peer")
-    ResponseEntity<WireGuardPeerResponse> addPeer(@RequestBody WireGuardPeer peer);
+    @PostMapping("/{wg}/peer")
+    ResponseEntity<WireGuardPeerResponse> addPeer(@PathVariable("wg") String wg, @RequestBody WireGuardPeer peer);
 
-    @DeleteMapping("/peer/{publicKey}")
-    ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String publicKey);
+    @DeleteMapping("/{wg}/peer/{publicKey}")
+    ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable("wg") String wg, @PathVariable("publicKey") String publicKey);
 
-    @GetMapping("/peer/{publicKey}/exists")
-    ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String publicKey);
+    @GetMapping("/{wg}/peer/{publicKey}/exists")
+    ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable("wg") String wg, @PathVariable("publicKey") String publicKey);
 }

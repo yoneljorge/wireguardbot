@@ -23,6 +23,7 @@ import dev.yonel.wireguardbot.bot.components.TelegramBotCustomOptions;
 import dev.yonel.wireguardbot.bot.components.TelegramPlatform;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageReplyMarkup;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageText;
+import dev.yonel.wireguardbot.bot.components.custom.CustomSendDocument;
 import dev.yonel.wireguardbot.bot.components.custom.CustomSendMessage;
 import dev.yonel.wireguardbot.bot.properties.TelegramBotAdminProperties;
 import dev.yonel.wireguardbot.bot.properties.TelegramBotClientProperties;
@@ -226,6 +227,15 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
                         log.error("Error enviando EditMessageReplyMarkup: {}", e.getMessage());
                     }
                 }
+
+                case CustomSendDocument sendDocument -> {
+                    try{
+                        execute(sendDocument);
+                    }catch(TelegramApiException e){
+                        log.error("Error enviando CustomSendDocument: {}", e.getMessage());
+                    }
+                }
+
                 case SendDocument sendDocument -> {
                     try {
                         execute(sendDocument);
@@ -233,6 +243,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
                         log.error("Error enviando SendDocument: {}", e.getMessage());
                     }
                 }
+                
                 case null -> {
                     returnResponseEmpty();
                 }

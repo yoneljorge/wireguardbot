@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.common.services;
+package dev.yonel.wireguardbot.common.services.database;
 
 import java.util.Optional;
 

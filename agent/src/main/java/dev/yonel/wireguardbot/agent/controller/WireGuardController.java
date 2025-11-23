@@ -33,10 +33,10 @@ public class WireGuardController {
         return ResponseEntity.ok(keyPair);
     }
 
-    @PostMapping("/peer")
-    public ResponseEntity<WireGuardPeerResponse> addPeer(@RequestBody WireGuardPeer peer) {
+    @PostMapping("/{wg}/peer")
+    public ResponseEntity<WireGuardPeerResponse> addPeer(@PathVariable String wg, @RequestBody WireGuardPeer peer) {
         try {
-            wireGuardPeerService.addPeer(peer);
+            wireGuardPeerService.addPeer(wg, peer);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
                 .success(true)
                 .message("Peer agregado exitosamente")
@@ -57,10 +57,10 @@ public class WireGuardController {
         }
     }
 
-    @DeleteMapping("/peer/{publicKey}")
-    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String publicKey) {
+    @DeleteMapping("/{wg}/peer/{publicKey}")
+    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg,@PathVariable String publicKey ) {
         try {
-            wireGuardPeerService.removePeer(publicKey);
+            wireGuardPeerService.removePeer(wg, publicKey);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
                 .success(true)
                 .message("Peer eliminado exitosamente")
@@ -81,10 +81,10 @@ public class WireGuardController {
         }
     }
 
-    @GetMapping("/peer/{publicKey}/exists")
-    public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String publicKey) {
+    @GetMapping("/{wg}/peer/{publicKey}/exists")
+    public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @PathVariable String publicKey) {
         try {
-            boolean exists = wireGuardPeerService.peerExists(publicKey);
+            boolean exists = wireGuardPeerService.peerExists(wg, publicKey);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
                 .success(true)
                 .message(exists ? "El peer existe" : "El peer no existe")

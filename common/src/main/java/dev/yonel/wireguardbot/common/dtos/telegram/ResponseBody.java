@@ -1,5 +1,6 @@
 package dev.yonel.wireguardbot.common.dtos.telegram;
 
+import java.io.File;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -34,4 +35,6 @@ public class ResponseBody {
     private String fileDocument;
     @Builder.Default
     private boolean removable = false;
+
+    private File file;
 }

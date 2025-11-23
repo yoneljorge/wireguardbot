@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
@@ -21,16 +20,13 @@ public class WireGuardPeerService {
 
     private static final Logger logger = LoggerFactory.getLogger(WireGuardPeerService.class);
 
-    @Value("${wireguard.interface:wg0}")
-    private String wireguardInterface;
-
     /**
      * Agrega un peer a la interfaz WireGuard
      * 
      * @param peer Información del peer a agregar
      * @throws RuntimeException si hay un error al ejecutar el comando
      */
-    public void addPeer(WireGuardPeer peer) {
+    public void addPeer(String wireguardInterface, WireGuardPeer peer) {
         if (peer.getPublicKey() == null || peer.getPublicKey().isEmpty()) {
             throw new IllegalArgumentException("La clave pública del peer es requerida");
         }
@@ -68,10 +64,11 @@ public class WireGuardPeerService {
     /**
      * Elimina un peer de la interfaz WireGuard
      * 
+     * @param wireguardInterface Interfaz de WireGuard 
      * @param publicKey Clave pública del peer a eliminar
      * @throws RuntimeException si hay un error al ejecutar el comando
      */
-    public void removePeer(String publicKey) {
+    public void removePeer(String wireguardInterface, String publicKey) {
         if (publicKey == null || publicKey.isEmpty()) {
             throw new IllegalArgumentException("La clave pública del peer es requerida");
         }
@@ -91,10 +88,11 @@ public class WireGuardPeerService {
     /**
      * Verifica si un peer existe en la interfaz WireGuard
      * 
+     * @param wireguardInterface Interfaz de WireGuard 
      * @param publicKey Clave pública del peer a verificar
      * @return true si el peer existe, false en caso contrario
      */
-    public boolean peerExists(String publicKey) {
+    public boolean peerExists(String wireguardInterface, String publicKey) {
         if (publicKey == null || publicKey.isEmpty()) {
             return false;
         }

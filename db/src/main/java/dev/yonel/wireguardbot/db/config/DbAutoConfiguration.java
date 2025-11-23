@@ -6,8 +6,11 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import dev.yonel.wireguardbot.common.services.UserService;
+import dev.yonel.wireguardbot.common.services.database.IpService;
+import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.db.repositories.IpRepository;
 import dev.yonel.wireguardbot.db.repositories.UserRepository;
+import dev.yonel.wireguardbot.db.services.IpServiceImpl;
 import dev.yonel.wireguardbot.db.services.UserServiceImpl;
 
 /**
@@ -24,6 +27,12 @@ public class DbAutoConfiguration {
     @ConditionalOnMissingBean
     public UserService userService(UserRepository userRepository) {
         return new UserServiceImpl(userRepository);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IpService ipService(IpRepository ipRepository){
+        return new IpServiceImpl(ipRepository);
     }
 }
 

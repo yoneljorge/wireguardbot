@@ -1,15 +1,19 @@
 package dev.yonel.wireguardbot.db.entities;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import dev.yonel.wireguardbot.common.enums.TypeRol;
 import dev.yonel.wireguardbot.db.crypto.SensitiveDataConverter;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,19 +43,10 @@ public class UserEntity {
     @Convert(converter = SensitiveDataConverter.class)
     private String lastName;
 
-    @Convert(converter = SensitiveDataConverter.class)
-    @Column(unique = true)
-    private String publicKey;
-
-    @Convert(converter = SensitiveDataConverter.class)
-    @Column(unique = true)
-    private String privateKey;
-
-    @Column(unique = true)
-    private Integer[] ipAssigned;
-
-    private LocalDate paidUpTo;
-    private Boolean active;
-    private LocalDate createdAt;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<PeerEntity> peers;
+    
     private TypeRol typeRol;
+    private LocalDate activedFreePlan;
+    private Boolean freePlanEnded;
 }

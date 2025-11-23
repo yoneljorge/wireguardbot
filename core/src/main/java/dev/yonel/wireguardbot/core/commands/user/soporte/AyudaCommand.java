@@ -1,5 +1,5 @@
 
-package dev.yonel.wireguardbot.core.commands.user;
+package dev.yonel.wireguardbot.core.commands.user.soporte;
 
 import java.util.ArrayList;
 import java.util.HashMap;

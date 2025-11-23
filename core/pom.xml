@@ -34,6 +34,12 @@
 			<artifactId>message-manager</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>bot</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

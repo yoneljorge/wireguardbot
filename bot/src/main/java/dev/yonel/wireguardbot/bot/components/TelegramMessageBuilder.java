@@ -2,12 +2,14 @@
 package dev.yonel.wireguardbot.bot.components;
 
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeCustomKeyboardMarkup;
 import dev.yonel.wireguardbot.common.utils.MarkdownMessageBuilder;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageReplyMarkup;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageText;
+import dev.yonel.wireguardbot.bot.components.custom.CustomSendDocument;
 import dev.yonel.wireguardbot.bot.components.custom.CustomSendMessage;
 
 @Component
@@ -84,4 +86,31 @@ public class TelegramMessageBuilder {
         }
         return markup;
     }
+
+    public CustomSendDocument buildSendDocument(ResponseBody responseBody){
+        CustomSendDocument sendDocument = new CustomSendDocument();
+        if(responseBody.getChatid() != null){
+            sendDocument.setChatId(responseBody.getChatid());
+        }else{
+            sendDocument.setChatId(responseBody.getUserid());
+        }
+
+        if(responseBody.getFile() != null){
+            sendDocument.setDocument(new InputFile(responseBody.getFile(), responseBody.getFile().getName()));
+        }
+
+        if(responseBody.getResponse() != null && !responseBody.getResponse().isEmpty()){
+            sendDocument.setCaption(responseBody.getResponse());
+        }
+
+        if(responseBody.getButtons() != null){
+            // Los documentos solo admiten Inline Keyboards (no Reply Keyboards)
+            sendDocument.setReplyMarkup(TelegramButtons.getInlineKeyboard(responseBody));
+        }
+
+        return sendDocument;
+    }   
+
+    
+
 }

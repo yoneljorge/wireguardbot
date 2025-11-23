@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WireGuardPeer {
+
     /**
      * Clave pública del peer en formato Base64
      */

@@ -83,5 +83,25 @@
     "name": "scheduler.autosendmessage.message",
     "type": "java.lang.String",
     "description": "Message content that will be sent automatically."
+  },
+  {
+    "name": "wireguard.server.name",
+    "type": "java.lang.String",
+    "description": "Name the Wireguard Server Interface'"
+  },
+  {
+    "name": "wireguard.server.address",
+    "type": "java.lang.String",
+    "description": "URL or IP address of the Wireguard server"
+  },
+  {
+    "name": "wireguard.server.port",
+    "type": "java.lang.String",
+    "description": "Wireguard server listening port"
+  },
+  {
+    "name": "wireguard.server.publicKey",
+    "type": "java.lang.String",
+    "description": "Wireguard server public key"
   }
 ]}

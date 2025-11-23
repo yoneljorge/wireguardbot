@@ -25,6 +25,10 @@ public class BeansTelegramBot {
 
     @Bean
     public WebhookBotClientImpl webhookBotClientImpl() {
+        System.out.println("=====================");
+        System.out.println(telegramBotClientProperties.toString());
+
+        
         return new WebhookBotClientImpl(telegramBotClientProperties);
     }
 
