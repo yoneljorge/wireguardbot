@@ -20,6 +20,7 @@ import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
 import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
+import dev.yonel.wireguardbot.message_manager.command.registry.GeneralCommandRegistry;
 import dev.yonel.wireguardbot.message_manager.command.registry.UserCommandRegistry;
 import dev.yonel.wireguardbot.message_manager.command.utils.CommandDetector;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
     @Autowired
     private CommandDetector commandDetector;
     @Autowired
-    private UserCommandRegistry userCommandRegistry;
+    private GeneralCommandRegistry generalCommandRegistry;
     @Autowired
     private ApplicationEventPublisher publisher;
 
@@ -90,21 +91,19 @@ public class MessageRelayServiceImpl implements MessageRelayService {
     }
 
     private boolean isUserRegistered(Long userId) throws Throwable {
-
-        try {
-            if (usuarioService.getUserByUserId(userId) != null) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
+        if (usuarioService.getUserByUserId(userId).isPresent()) {
+            return true;
+        } else {
             return false;
         }
     }
 
     private List<ResponseBody> handleNewUser(MessageBody messageBody, UserSessionContext context) throws Throwable {
-        Command defaultCommand = userCommandRegistry.getCommands().getFirst();
-        return defaultCommand.execute(messageBody, context);
+        Command startCommand = generalCommandRegistry.getCommands().stream()
+                .filter(command -> command.getName().equals("start"))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("StartCommand not found"));
+        return startCommand.execute(messageBody, context);
     }
 
     private List<ResponseBody> handleRegisteredUser(MessageBody messageBody, UserSessionContext context)
@@ -138,7 +137,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
             messageBody.setCallbackData(callbackData.substring(5));
         }
 
-        if (message.toLowerCase().startsWith("reset") ||message.toLowerCase().startsWith("ayuda")) {
+        if (message.toLowerCase().startsWith("reset") || message.toLowerCase().startsWith("ayuda")) {
             context.getBotSession(messageBody.getTypeBot()).reset();
         }
     }
@@ -173,23 +172,17 @@ public class MessageRelayServiceImpl implements MessageRelayService {
         Optional<UserDto> usuarioOptional = usuarioService.getUserByUserId(messageBody.getUserid());
         if (usuarioOptional.isPresent()) {
             UserDto usuario = usuarioOptional.get();
-            try {
-                if (usuario != null) {
-                    if (!usuario.getUserName().equals(messageBody.getUserName())) {
-                        return true;
-                    }
+            if (!usuario.getUserName().equals(messageBody.getUserName())) {
+                return true;
+            }
 
-                    if (!usuario.getFirstName().equals(messageBody.getFirstName())) {
-                        return true;
-                    }
+            if (!usuario.getFirstName().equals(messageBody.getFirstName())) {
+                return true;
+            }
 
-                    if (!usuario.getLastName().equals(messageBody.getLastName())) {
-                        return true;
-                    }
-                }
-                return false;
-            } catch (Exception e) {
-                log.error("Error en MessageRelayService.updateUserInformation: {}", e.getMessage());
+            if (!usuario.getLastName().equals(messageBody.getLastName())) {
+                return true;
+            } else {
                 return false;
             }
         } else {

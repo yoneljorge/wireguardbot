@@ -70,7 +70,7 @@ public class CommandDetector {
             if(usuarioOptional.isPresent()){
                 usuario = usuarioOptional.get();
             }else{
-                throw new InternalError();
+                throw new InternalError(); 
             }
             try {
                 /*

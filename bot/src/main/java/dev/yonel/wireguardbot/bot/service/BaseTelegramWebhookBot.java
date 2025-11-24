@@ -141,6 +141,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
             } catch (Throwable e) {
                 log.error("Error en telegramPlatform.receivedFromMessage (privado): {}", e.getMessage(), e);
                 handleResponse(null, bot);
+                e.printStackTrace();
                 return;
             }
         }

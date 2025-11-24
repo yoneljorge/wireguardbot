@@ -12,10 +12,10 @@ import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.exceptions.DuplicateUserException;
 import dev.yonel.wireguardbot.common.exceptions.NotExistsException;
 import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.db.cache.UserCaffeineCache;
 import dev.yonel.wireguardbot.db.entities.IpEntity;
 import dev.yonel.wireguardbot.db.entities.PeerEntity;
 import dev.yonel.wireguardbot.db.entities.UserEntity;
-import dev.yonel.wireguardbot.db.repositories.UserRepository;
 
 /**
  * Implementación interna de UserService.
@@ -29,16 +29,16 @@ import dev.yonel.wireguardbot.db.repositories.UserRepository;
  */
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserCaffeineCache userCaffeineCache;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserCaffeineCache userCaffeineCache) {
+        this.userCaffeineCache = userCaffeineCache;
     }
 
     @Override
     public Optional<UserDto> createUser(UserDto user) throws DuplicateUserException, InternalError {
         try {
-            UserEntity newEntity = userRepository.save(convertToEntity(user));
+            UserEntity newEntity = userCaffeineCache.save(convertToEntity(user));
             return Optional.ofNullable(convertToDto(newEntity));
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateUserException();
@@ -49,19 +49,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDto> getUser(Long id) throws IllegalArgumentException {
-        try {
-            Optional<UserEntity> entity = userRepository.findById(id);
-            if (!entity.isPresent()) {
-                return Optional.empty();
-            }
-            return Optional.ofNullable(convertToDto(entity.get()));
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("El id no puede ser null");
-        } catch (Exception e) {
-            e.printStackTrace();
+        UserEntity entity = userCaffeineCache.findById(id);
+        if (entity == null) {
             return Optional.empty();
         }
+        return Optional.ofNullable(convertToDto(entity));
+
     }
 
     @Override
@@ -69,16 +62,13 @@ public class UserServiceImpl implements UserService {
         if (userId == null) {
             throw new IllegalArgumentException("UserId is null.");
         }
-        try {
-            Optional<UserEntity> entity = userRepository.findByUserId(userId);
-            if (!entity.isPresent()) {
-                return Optional.empty();
-            }
-            return Optional.ofNullable(convertToDto(entity.get()));
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        UserEntity entity = userCaffeineCache.findByUserId(userId);
+        if (entity == null) {
             return Optional.empty();
         }
+        return Optional.ofNullable(convertToDto(entity));
+
     }
 
     @Override
@@ -87,8 +77,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("User is null.");
         }
         try {
-            if (userRepository.existsById(user.getId())) {
-                UserEntity entity = userRepository.save(convertToEntity(user));
+            if (userCaffeineCache.findById(user.getId()) != null) {
+                UserEntity entity = userCaffeineCache.save(convertToEntity(user));
                 return Optional.ofNullable(convertToDto(entity));
             } else {
                 throw new NotExistsException("No existe el usuario que se desea actualizar.");
@@ -101,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(UserDto user) {
-        userRepository.delete(convertToEntity(user));
+        userCaffeineCache.delete(convertToEntity(user));
     }
 
     private UserEntity convertToEntity(UserDto user) {
@@ -134,6 +124,10 @@ public class UserServiceImpl implements UserService {
 
     private List<PeerEntity> convertPeersToEntitis(UserDto user) {
         List<PeerEntity> peers = new ArrayList<>();
+        if (user.getPeers() == null) {
+            return peers;
+        }
+
         for (PeerDto p : user.getPeers()) {
 
             PeerEntity peer = PeerEntity.builder()
@@ -158,6 +152,11 @@ public class UserServiceImpl implements UserService {
 
     private List<PeerDto> convertPeersToDto(UserEntity user) {
         List<PeerDto> peers = new ArrayList<>();
+
+        if (user.getPeers() == null) {
+            return peers;
+        }
+
         for (PeerEntity p : user.getPeers()) {
             PeerDto dto = PeerDto.builder()
                     .id(p.getId())
@@ -180,7 +179,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean userExistsByUserId(Integer userId) {
-        return userRepository.existsByUserId(userId);
+    public boolean userExistsByUserId(Long userId) {
+        return userCaffeineCache.findByUserId(userId) != null;
     }
 }

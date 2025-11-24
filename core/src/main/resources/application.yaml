@@ -12,9 +12,9 @@ logging:
 
 spring:
   application:
-    name: wireguard-core
+    name: wireguardbot-core
   datasource:
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: ${DATASOURCE_DRIVER_CLASS_NAME}
     hikari:
       maximum-pool-size: 10
       minimum-idle: 5
@@ -36,6 +36,8 @@ eureka:
   client:
     register-with-eureka: false # No se registra a sí mismo
     fetch-registry: false # No consulta a otros servidores
+    service-url:
+      defaultZone: http://localhost:${SERVER_PORT}/core/eureka/
   server:
     enable-self-preservation: true # Evita eliminar servicios muy rápido
     eviction-interval-timer-in-ms: 20000 # tiempo para limpiar instancias inactivas (20s)

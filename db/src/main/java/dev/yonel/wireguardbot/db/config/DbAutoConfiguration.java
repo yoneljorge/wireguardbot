@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import dev.yonel.wireguardbot.common.services.database.IpService;
 import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.db.cache.UserCaffeineCache;
 import dev.yonel.wireguardbot.db.repositories.IpRepository;
-import dev.yonel.wireguardbot.db.repositories.UserRepository;
 import dev.yonel.wireguardbot.db.services.IpServiceImpl;
 import dev.yonel.wireguardbot.db.services.UserServiceImpl;
 
@@ -25,8 +25,8 @@ public class DbAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UserService userService(UserRepository userRepository) {
-        return new UserServiceImpl(userRepository);
+    public UserService userService(UserCaffeineCache userCaffeineCache) {
+        return new UserServiceImpl(userCaffeineCache);
     }
 
     @Bean

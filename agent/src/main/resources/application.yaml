@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: agent
+    name: wireguardbot-agent
 
 eureka:
   client:
@@ -13,4 +13,4 @@ eureka:
       defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE}
   instance:
     prefer-ip-address: true
-    hostname: agent
+    hostname: localhost

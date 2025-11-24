@@ -28,7 +28,7 @@ import lombok.Setter;
 @Entity(name = "usuarios")
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
@@ -43,7 +43,12 @@ public class UserEntity {
     @Convert(converter = SensitiveDataConverter.class)
     private String lastName;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+        mappedBy = "user",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true,
+        fetch = FetchType.LAZY
+    )
     private List<PeerEntity> peers;
     
     private TypeRol typeRol;

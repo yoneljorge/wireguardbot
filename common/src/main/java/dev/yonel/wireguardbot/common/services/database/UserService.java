@@ -18,5 +18,5 @@ public interface UserService {
 
     void deleteUser(UserDto user);
 
-    boolean userExistsByUserId(Integer userId);
+    boolean userExistsByUserId(Long userId);
 }

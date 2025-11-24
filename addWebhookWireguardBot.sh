@@ -2,7 +2,7 @@
 
 # Variables configurables
 TELEGRAM_API_URL="https://api.telegram.org/bot"
-WEBHOOK_BASE_URL="https://11adbaceaff5.ngrok-free.app/chatbot/webhook-telegram"
+WEBHOOK_BASE_URL="https://588f0130a518.ngrok-free.app/core/webhook-telegram"
 
 # Tokens de los bots
 WIREGUARD_CLIENT_TOKEN="8558018850:AAFJxq0be_zpVPi4vGpw45zK6yAUsHGI68E"
