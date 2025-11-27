@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
@@ -17,6 +18,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 @SpringBootApplication(scanBasePackages = "dev.yonel.wireguardbot")
 @EnableEurekaServer
 @EnableFeignClients
+@EnableCaching
 public class CoreApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(CoreApplication.class);

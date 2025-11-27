@@ -37,12 +37,12 @@ eureka:
     register-with-eureka: false # No se registra a sí mismo
     fetch-registry: false # No consulta a otros servidores
     service-url:
-      defaultZone: http://localhost:${SERVER_PORT}/core/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port}${server.servlet.context-path}/eureka/
   server:
     enable-self-preservation: true # Evita eliminar servicios muy rápido
     eviction-interval-timer-in-ms: 20000 # tiempo para limpiar instancias inactivas (20s)
   instance:
-    hostname: localhost
+    hostname: ${spring.application.name}
 
 telegram:
   path: ${TELEGRAM_PATH}

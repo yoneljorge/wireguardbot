@@ -24,12 +24,7 @@ public class BeansTelegramBot {
     private TelegramBotAdminProperties telegramBotAdminProperties;
 
     @Bean
-    public WebhookBotClientImpl webhookBotClientImpl() {
-        //FIXME borrar esto
-        System.out.println("=====================");
-        System.out.println(telegramBotClientProperties.getToken());
-
-        
+    public WebhookBotClientImpl webhookBotClientImpl() {        
         return new WebhookBotClientImpl(telegramBotClientProperties);
     }
 
