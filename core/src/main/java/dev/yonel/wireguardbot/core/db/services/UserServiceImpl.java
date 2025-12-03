@@ -1,10 +1,11 @@
-package dev.yonel.wireguardbot.db.services;
+package dev.yonel.wireguardbot.core.db.services;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
 
 import dev.yonel.wireguardbot.common.dtos.IpDto;
 import dev.yonel.wireguardbot.common.dtos.PeerDto;
@@ -12,10 +13,10 @@ import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.exceptions.DuplicateUserException;
 import dev.yonel.wireguardbot.common.exceptions.NotExistsException;
 import dev.yonel.wireguardbot.common.services.database.UserService;
-import dev.yonel.wireguardbot.db.cache.UserCaffeineCache;
-import dev.yonel.wireguardbot.db.entities.IpEntity;
-import dev.yonel.wireguardbot.db.entities.PeerEntity;
-import dev.yonel.wireguardbot.db.entities.UserEntity;
+import dev.yonel.wireguardbot.core.db.cache.UserCaffeineCache;
+import dev.yonel.wireguardbot.core.db.entities.IpEntity;
+import dev.yonel.wireguardbot.core.db.entities.PeerEntity;
+import dev.yonel.wireguardbot.core.db.entities.UserEntity;
 
 /**
  * Implementación interna de UserService.
@@ -27,6 +28,7 @@ import dev.yonel.wireguardbot.db.entities.UserEntity;
  *          No debe ser instanciada o referenciada directamente desde fuera del
  *          módulo db.
  */
+@Service
 public class UserServiceImpl implements UserService {
 
     private final UserCaffeineCache userCaffeineCache;

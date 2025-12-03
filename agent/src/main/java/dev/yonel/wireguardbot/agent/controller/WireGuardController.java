@@ -33,69 +33,69 @@ public class WireGuardController {
         return ResponseEntity.ok(keyPair);
     }
 
-    @PostMapping("/{wg}/peer")
+    @PostMapping("/{wg}/peer/add")
     public ResponseEntity<WireGuardPeerResponse> addPeer(@PathVariable String wg, @RequestBody WireGuardPeer peer) {
         try {
             wireGuardPeerService.addPeer(wg, peer);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
-                .success(true)
-                .message("Peer agregado exitosamente")
-                .data(null) // No data to return for add operation
-                .build());
+                    .success(true)
+                    .message("Peer agregado exitosamente")
+                    .data(null) // No data to return for add operation
+                    .build());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(WireGuardPeerResponse.builder()
-                .success(false)
-                .message(e.getMessage())
-                .data(null)
-                .build());
+                    .success(false)
+                    .message(e.getMessage())
+                    .data(null)
+                    .build());
         } catch (RuntimeException e) {
             return ResponseEntity.internalServerError().body(WireGuardPeerResponse.builder()
-                .success(false)
-                .message("Error al agregar peer: " + e.getMessage())
-                .data(null)
-                .build());
+                    .success(false)
+                    .message("Error al agregar peer: " + e.getMessage())
+                    .data(null)
+                    .build());
         }
     }
 
-    @DeleteMapping("/{wg}/peer/{publicKey}")
-    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg,@PathVariable String publicKey ) {
+    @DeleteMapping("/{wg}/peer/remove/{publicKey}")
+    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg, @PathVariable String publicKey) {
         try {
             wireGuardPeerService.removePeer(wg, publicKey);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
-                .success(true)
-                .message("Peer eliminado exitosamente")
-                .data(null)
-                .build());
+                    .success(true)
+                    .message("Peer eliminado exitosamente")
+                    .data(null)
+                    .build());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(WireGuardPeerResponse.builder()
-                .success(false)
-                .message(e.getMessage())
-                .data(null)
-                .build());
+                    .success(false)
+                    .message(e.getMessage())
+                    .data(null)
+                    .build());
         } catch (RuntimeException e) {
             return ResponseEntity.internalServerError().body(WireGuardPeerResponse.builder()
-                .success(false)
-                .message("Error al eliminar peer: " + e.getMessage())
-                .data(null)
-                .build());
+                    .success(false)
+                    .message("Error al eliminar peer: " + e.getMessage())
+                    .data(null)
+                    .build());
         }
     }
 
-    @GetMapping("/{wg}/peer/{publicKey}/exists")
+    @GetMapping("/{wg}/peer/exists/{publicKey}")
     public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @PathVariable String publicKey) {
         try {
             boolean exists = wireGuardPeerService.peerExists(wg, publicKey);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
-                .success(true)
-                .message(exists ? "El peer existe" : "El peer no existe")
-                .data(exists)
-                .build());
+                    .success(true)
+                    .message(exists ? "El peer existe" : "El peer no existe")
+                    .data(exists)
+                    .build());
         } catch (RuntimeException e) {
             return ResponseEntity.internalServerError().body(WireGuardPeerResponse.builder()
-                .success(false)
-                .message("Error al verificar peer: " + e.getMessage())
-                .data(null)
-                .build());
+                    .success(false)
+                    .message("Error al verificar peer: " + e.getMessage())
+                    .data(null)
+                    .build());
         }
     }
 }

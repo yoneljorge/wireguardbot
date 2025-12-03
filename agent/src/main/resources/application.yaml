@@ -7,10 +7,12 @@ spring:
 
 eureka:
   client:
-    register-with-eureka: true # Este servicio si debe registrarse
-    fetch-registry: true # Este servicio si debe buscar en el registro
+    register-with-eureka: true
+    fetch-registry: true
+    lease-renewal-interval-in-seconds: 15
+    lease-expiration-duration-in-seconds: 45
     service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE}
+      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULT_ZONE}
   instance:
     prefer-ip-address: true
     hostname: ${spring.application.name}

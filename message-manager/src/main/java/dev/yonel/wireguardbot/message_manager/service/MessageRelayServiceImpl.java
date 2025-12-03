@@ -21,7 +21,6 @@ import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.command.registry.GeneralCommandRegistry;
-import dev.yonel.wireguardbot.message_manager.command.registry.UserCommandRegistry;
 import dev.yonel.wireguardbot.message_manager.command.utils.CommandDetector;
 import lombok.extern.slf4j.Slf4j;
 

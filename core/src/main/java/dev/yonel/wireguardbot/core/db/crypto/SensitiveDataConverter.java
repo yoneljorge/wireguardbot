@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.db.crypto;
+package dev.yonel.wireguardbot.core.db.crypto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -34,3 +34,5 @@ build/
 agent/.env
 .agent.env
 .core.env
+command_bot.txt
+addWebhookWireguardBot.sh

@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.db.cache;
+package dev.yonel.wireguardbot.core.db.cache;
 
 import java.time.Duration;
 
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
-import dev.yonel.wireguardbot.db.entities.UserEntity;
-import dev.yonel.wireguardbot.db.repositories.UserRepository;
+import dev.yonel.wireguardbot.core.db.entities.UserEntity;
+import dev.yonel.wireguardbot.core.db.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

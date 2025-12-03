@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.db.repositories;
+package dev.yonel.wireguardbot.core.db.repositories;
 
 import java.util.Optional;
 
@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import dev.yonel.wireguardbot.db.entities.UserEntity;
+import dev.yonel.wireguardbot.core.db.entities.UserEntity;
 
 
 @Repository

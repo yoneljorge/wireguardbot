@@ -25,12 +25,16 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
 
     public static final String EJECUCION_TERMINADA = "ejecucion_terminada";
     public static final String NAME = "configuracion";
+    public static final String[] ALIASES =  { "/menu_configuracion", "menu configuracion", "getionar perfiles"};
 
-    private final String OPCION_ATRAS = "atras";
-    private final String OPCION_GESTION = "gestion";
-    private final String OPCION_CREAR = "crear";
-    private final String OPCION_OBTENER = "obtener";
-    private final String OPCION_ELIMINAR = "eliminar";
+    private final String OPCION_ATRAS = "/atras";
+    private final String[] ATRAS_ALIASES = { "atras", "/atras", "🔙", "atras" };
+    private final String OPCION_CREAR = CrearConfiguracionCommand.NAME;
+    private final String[] CREAR_ALIASES = CrearConfiguracionCommand.ALIASES;
+    private final String OPCION_OBTENER = ObtenerConfiguracionCommand.NAME;
+    private final String[] OBTENER_ALIASES = ObtenerConfiguracionCommand.ALIASES;
+    private final String OPCION_ELIMINAR = EliminarConfiguracionCommand.NAME;
+    private final String[] ELIMINAR_ALIASES = EliminarConfiguracionCommand.ALIASES;
 
     @Override
     public List<ResponseBody> execute(MessageBody messageBody, UserSessionContext context) throws Throwable {
@@ -38,8 +42,7 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
 
         String option = null;
 
-        String[] listAtras = new String[] { "atras", "/atras", "🔙", "atras" };
-        if (Match.findMaxSimilarity(messageBody.getMessage(), listAtras) > 0.80) {
+        if (Match.findMaxSimilarity(messageBody.getMessage(), ATRAS_ALIASES) > 0.80) {
             context.getBotSession(messageBody.getTypeBot()).cleanData();
             context.getBotSession(messageBody.getTypeBot()).resetStep();
             context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.GESTION_COMMAND_OPCION, OPCION_ATRAS);
@@ -80,11 +83,6 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                     break;
                 }
 
-                case OPCION_GESTION -> {
-                    addResponses(ConfiguracionCommandFactory.getCommand(GestionarConfiguracionCommand.NAME).execute(messageBody, context));
-                    break;
-                }
-
                 case OPCION_OBTENER -> {
                     addResponses(ConfiguracionCommandFactory.getCommand(ObtenerConfiguracionCommand.NAME).execute(messageBody, context));
                     break;
@@ -116,7 +114,7 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
 
     @Override
     public String[] getAliases() {
-        return new String[] { "conf", "configuracion", "gestionar conf", "crear_conf", "obtener_conf", "eliminar_conf" };
+        return ALIASES;
     }
 
     private void buildMenu(MessageBody messageBody) {
@@ -126,27 +124,22 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
         getCurrentResponse().setParseMode(TypeParseMode.HTML);
         List<Button> buttons = List.of(
                 Button.builder()
-                        .callbackData("gestion")
-                        .text("⚙️ Gestion")
-                        .typeButton(TypeCustomButton.CALLBACKDATA)
-                        .build(),
-                Button.builder()
-                        .callbackData("crear")
+                        .callbackData(OPCION_CREAR)
                         .text("✨ Crear Configuración")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData("obtener")
+                        .callbackData(OPCION_OBTENER)
                         .text("📄 Obtener Configuración")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData("eliminar")
+                        .callbackData(OPCION_ELIMINAR)
                         .text("🗑️ Eliminar")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData("atras")
+                        .callbackData(OPCION_ATRAS)
                         .text("🔙 Atras")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build());
@@ -156,20 +149,16 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
     private String option(String text) {
         List<Map<String, String[]>> opciones = new ArrayList<>();
 
-        Map<String, String[]> mapGestion = new HashMap<>();
-        mapGestion.put(OPCION_GESTION, new String[] {"gestion", "gestionar configuracion"});
-        opciones.add(mapGestion);
-
         Map<String, String[]> mapCrear = new HashMap<>();
-        mapCrear.put(OPCION_CREAR, new String[] { "crear", "crear configuracion" });
+        mapCrear.put(OPCION_CREAR, CREAR_ALIASES);
         opciones.add(mapCrear);
 
         Map<String, String[]> mapObtener = new HashMap<>();
-        mapObtener.put(OPCION_OBTENER, new String[] { "obtener", "obtener configuracion" });
+        mapObtener.put(OPCION_OBTENER, OBTENER_ALIASES);
         opciones.add(mapObtener);
 
         Map<String, String[]> mapEliminar = new HashMap<>();
-        mapEliminar.put(OPCION_ELIMINAR, new String[] { "eliminar", "eliminar configuracion" });
+        mapEliminar.put(OPCION_ELIMINAR, ELIMINAR_ALIASES);
         opciones.add(mapEliminar);
 
         String option = Match.findBestMatch(text, opciones);

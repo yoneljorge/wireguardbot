@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageReplyMarkup;
 import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageText;
 import dev.yonel.wireguardbot.bot.components.custom.CustomSendMessage;
-import dev.yonel.wireguardbot.bot.queue.MensajeColaService;
+import dev.yonel.wireguardbot.bot.service.queue.MensajeColaService;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;

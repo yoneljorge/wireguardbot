@@ -16,10 +16,6 @@ public class ConfiguracionCommandFactory {
             return new EliminarConfiguracionCommand();
         }
 
-        if(commandName.equalsIgnoreCase(GestionarConfiguracionCommand.NAME)){
-            return new GestionarConfiguracionCommand();
-        }
-
         if(commandName.equalsIgnoreCase(ObtenerConfiguracionCommand.NAME)){
             return new ObtenerConfiguracionCommand();
         }

@@ -1,5 +1,5 @@
 
-package dev.yonel.wireguardbot.bot.queue;
+package dev.yonel.wireguardbot.bot.service.queue;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;

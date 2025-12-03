@@ -14,40 +14,18 @@
     <packaging>jar</packaging>
     
     <name>common</name>
-    <description>Libreria que va a tener los DTOs, utilidades, excepciones y mappers.</description>
+    <description>Libreria que va a tener los DTO, utilidades, excepciones y mappers.</description>
 
     <dependencies>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-        <!-- Actuator (opcional, útil para health checks y métricas) -->
-        <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
         <!-- Simmetrics-->
 		<dependency>
 			<groupId>com.github.mpkorstanje</groupId>
 			<artifactId>simmetrics-core</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>
     </dependencies>
 </project>

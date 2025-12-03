@@ -1,4 +1,4 @@
-package dev.yonel.wireguardbot.db.entities;
+package dev.yonel.wireguardbot.core.db.entities;
 
 import java.time.LocalDate;
 

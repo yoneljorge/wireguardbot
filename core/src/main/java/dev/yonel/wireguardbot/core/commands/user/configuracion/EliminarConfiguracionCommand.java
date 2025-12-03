@@ -10,7 +10,8 @@ import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 
 public class EliminarConfiguracionCommand extends CommandBase implements Command{
 
-    public static final String NAME = "eliminar_configuracion";
+    public static final String NAME = "/eliminar_configuracion";
+    public static final String[] ALIASES = {"/eliminar_configuracion", "eliminar configuracion", "eliminar perfil"};
 
     @Override
     public List<ResponseBody> execute(MessageBody messageBody, UserSessionContext context) throws Throwable {
@@ -25,8 +26,7 @@ public class EliminarConfiguracionCommand extends CommandBase implements Command
 
     @Override
     public String[] getAliases() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAliases'");
+        return ALIASES;
     }
 
 }

@@ -13,8 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import dev.yonel.wireguardbot.bot.properties.TelegramBotAdminProperties;
 import dev.yonel.wireguardbot.bot.properties.TelegramBotClientProperties;
-import dev.yonel.wireguardbot.bot.queue.IncomingMessageTelegram;
-import dev.yonel.wireguardbot.bot.queue.MensajeColaService;
+import dev.yonel.wireguardbot.bot.service.queue.IncomingMessageTelegram;
+import dev.yonel.wireguardbot.bot.service.queue.MensajeColaService;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import lombok.extern.slf4j.Slf4j;
 

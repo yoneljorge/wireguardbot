@@ -35,27 +35,14 @@ public class WireGuardPeerService {
         }
 
         List<String> command = new ArrayList<>();
+        command.add("sudo");
         command.add("wg");
         command.add("set");
         command.add(wireguardInterface);
         command.add("peer");
         command.add(peer.getPublicKey());
-        command.add("allowed-ip");
+        command.add("allowed-ips");
         command.add(peer.getAllowedIp());
-
-        // Agregar IPs permitidas adicionales si existen
-        if (peer.getAllowedIps() != null && peer.getAllowedIps().length > 0) {
-            for (String allowedIp : peer.getAllowedIps()) {
-                command.add("allowed-ip");
-                command.add(allowedIp);
-            }
-        }
-
-        // Agregar endpoint si está especificado
-        if (peer.getEndpoint() != null && !peer.getEndpoint().isEmpty()) {
-            command.add("endpoint");
-            command.add(peer.getEndpoint());
-        }
 
         executeCommand(command);
         logger.info("Peer agregado exitosamente. Clave pública: {}", peer.getPublicKey());
@@ -64,8 +51,8 @@ public class WireGuardPeerService {
     /**
      * Elimina un peer de la interfaz WireGuard
      * 
-     * @param wireguardInterface Interfaz de WireGuard 
-     * @param publicKey Clave pública del peer a eliminar
+     * @param wireguardInterface Interfaz de WireGuard
+     * @param publicKey          Clave pública del peer a eliminar
      * @throws RuntimeException si hay un error al ejecutar el comando
      */
     public void removePeer(String wireguardInterface, String publicKey) {
@@ -74,6 +61,7 @@ public class WireGuardPeerService {
         }
 
         List<String> command = new ArrayList<>();
+        command.add("sudo");
         command.add("wg");
         command.add("set");
         command.add(wireguardInterface);
@@ -88,8 +76,8 @@ public class WireGuardPeerService {
     /**
      * Verifica si un peer existe en la interfaz WireGuard
      * 
-     * @param wireguardInterface Interfaz de WireGuard 
-     * @param publicKey Clave pública del peer a verificar
+     * @param wireguardInterface Interfaz de WireGuard
+     * @param publicKey          Clave pública del peer a verificar
      * @return true si el peer existe, false en caso contrario
      */
     public boolean peerExists(String wireguardInterface, String publicKey) {
@@ -99,6 +87,7 @@ public class WireGuardPeerService {
 
         try {
             List<String> command = new ArrayList<>();
+            command.add("sudo");
             command.add("wg");
             command.add("show");
             command.add(wireguardInterface);
@@ -146,8 +135,8 @@ public class WireGuardPeerService {
 
             try (BufferedReader reader = new BufferedReader(
                     new InputStreamReader(process.getInputStream()));
-                 BufferedReader errorReader = new BufferedReader(
-                    new InputStreamReader(process.getErrorStream()))) {
+                    BufferedReader errorReader = new BufferedReader(
+                            new InputStreamReader(process.getErrorStream()))) {
 
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -162,14 +151,14 @@ public class WireGuardPeerService {
             int exitCode = process.waitFor();
 
             if (exitCode != 0) {
-                String errorMsg = errorOutput.length() > 0 
-                    ? errorOutput.toString() 
-                    : output.toString();
-                logger.error("Error al ejecutar comando. Código de salida: {}. Error: {}", 
-                    exitCode, errorMsg);
+                String errorMsg = errorOutput.length() > 0
+                        ? errorOutput.toString()
+                        : output.toString();
+                logger.error("Error al ejecutar comando. Código de salida: {}. Error: {}",
+                        exitCode, errorMsg);
                 throw new RuntimeException(
-                    String.format("Error al ejecutar comando WireGuard. Código: %d. Error: %s", 
-                        exitCode, errorMsg));
+                        String.format("Error al ejecutar comando WireGuard. Código: %d. Error: %s",
+                                exitCode, errorMsg));
             }
 
             if (output.length() > 0) {
@@ -185,4 +174,3 @@ public class WireGuardPeerService {
         }
     }
 }
-

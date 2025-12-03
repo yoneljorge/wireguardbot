@@ -1,10 +1,10 @@
-package dev.yonel.wireguardbot.db.entities;
+package dev.yonel.wireguardbot.core.db.entities;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import dev.yonel.wireguardbot.common.enums.TypeRol;
-import dev.yonel.wireguardbot.db.crypto.SensitiveDataConverter;
+import dev.yonel.wireguardbot.core.db.crypto.SensitiveDataConverter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;

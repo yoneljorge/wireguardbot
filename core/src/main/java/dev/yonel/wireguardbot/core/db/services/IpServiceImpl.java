@@ -1,12 +1,12 @@
-package dev.yonel.wireguardbot.db.services;
+package dev.yonel.wireguardbot.core.db.services;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import dev.yonel.wireguardbot.common.services.database.IpService;
-import dev.yonel.wireguardbot.db.entities.IpEntity;
-import dev.yonel.wireguardbot.db.repositories.IpRepository;
+import dev.yonel.wireguardbot.core.db.entities.IpEntity;
+import dev.yonel.wireguardbot.core.db.repositories.IpRepository;
 
 @Service
 public class IpServiceImpl implements IpService{

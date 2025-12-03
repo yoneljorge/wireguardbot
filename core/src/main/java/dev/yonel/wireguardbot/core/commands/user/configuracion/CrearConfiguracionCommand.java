@@ -13,7 +13,8 @@ import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 
 public class CrearConfiguracionCommand extends CommandBase implements Command{
 
-    public final static String NAME = "crear_configuracion_command";
+    public static final String NAME = "/crear_configuracion";
+    public static final String[] ALIASES = {"/crear_configuracion", "crear configuracion", "crear perfil"};
 
     @Autowired
     private WireguardService wireguardService;
@@ -31,7 +32,7 @@ public class CrearConfiguracionCommand extends CommandBase implements Command{
 
     @Override
     public String[] getAliases() {
-        return new String[]{"crear configuracion", "crear", "crear_configuracion"};
+        return new String[]{"/crear_configuracion", "crear configuracion", "crear perfil"};
     }
     
 }

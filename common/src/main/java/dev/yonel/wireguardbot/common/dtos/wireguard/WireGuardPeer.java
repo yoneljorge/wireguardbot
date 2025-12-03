@@ -25,16 +25,5 @@ public class WireGuardPeer {
      * IP permitida para el peer (ej: 10.0.0.2/32)
      */
     private String allowedIp;
-    
-    /**
-     * Endpoint del peer (opcional, formato: host:port)
-     * Solo necesario si el peer es otro servidor WireGuard
-     */
-    private String endpoint;
-    
-    /**
-     * IPs permitidas adicionales (opcional)
-     */
-    private String[] allowedIps;
 }
 
