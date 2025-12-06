@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "agent/target/*.jar"
-          target: "/home/admin/agent.jar"
+          target: "/home/admin/"
           strip_components: 2
 
       # 5. Reiniciar servicio systemd
@@ -49,7 +49,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            sudo mv /home/admin/agent.jar /opt/wireguard-agent/agent.jar
+            sudo mv /home/admin/*.jar /opt/wireguard-agent/agent.jar
+            sudo chmod +x /opt/wireguard-agent/agent.jar
             sudo systemctl daemon-reload
             sudo systemctl restart wireguard-agent
             sudo systemctl status wireguard-agent --no-pager
