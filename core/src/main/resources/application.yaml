@@ -3,8 +3,6 @@ app:
 
 server:
   port: ${SERVER_PORT}
-  servlet:
-    context-path: /core
 
 logging:
   level:
@@ -31,46 +29,34 @@ spring:
     properties:
       hibernate:
         format_sql:true
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    lease-renewal-interval-in-seconds: 15
-    lease-expiration-duration-in-seconds: 45
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
-  instance:
-    prefer-ip-address: true
-    hostname: ${spring.application.name}
-    instance-id: ${INSTANCE_ID}
-
+  cloud:
+    consul:
+      host: ${CONSUL_HOST}
+      port: ${CONSUL_PORT}
+      discovery:
+        enabled: true
+        register: true
+        service-nace: ${spring.application.name}
+        prefer-ip-address: true
+        ip-address: ${IP_ADDRESS:127.0.0.1}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        instance-id: ${INSTANCE_ID:${spring.application.name}-${SERVER_PORT}}
 telegram:
   path: ${TELEGRAM_PATH}
-  chatid: ${TELEGRAM_CHATID}
-  groupid: ${TELEGRAM_GROUPID}
-  grouptitle: ${TELEGRAM_GROUPTITLE}
   bot:
     client:
       token: ${TELEGRAM_BOT_CLIENT_TOKEN}
       username: ${TELEGRAM_BOT_CLIENT_USERNAME}
-      path: ${app.url}${server.servlet.context-path}${telegram.path}/${telegram.bot.client.token}
+      path: ${telegram.path}/${telegram.bot.client.token}
     admin:
       token: ${TELEGRAM_BOT_ADMIN_TOKEN}
       username: ${TELEGRAM_BOT_ADMIN_USERNAME}
-      path: ${app.url}${server.servlet.context-path}${telegram.path}/${telegram.bot.admin.token}
+      path: ${telegram.path}/${telegram.bot.admin.token}
 
 encryption:
   service:
     key: ${ENCRYPTION_KEY}
-
-scheduler:
-  autosendmessage:
-    appurl: ${telegram.bot.client.path}
-    active: ${SCHEDULER_AUTO_SEND_MESSAGE_ACTIVE}
-    chatid: ${telegram.chatid}
-    time: ${SCHEDULER_AUTO_SEND_MESSAGE_TIME:50}
-    message: ${SCHEDULER_AUTO_SEND_MESSAGE_MESSAGE}
 
 wireguard:
   server:

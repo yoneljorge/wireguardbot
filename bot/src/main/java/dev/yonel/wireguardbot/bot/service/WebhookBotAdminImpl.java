@@ -3,6 +3,7 @@ package dev.yonel.wireguardbot.bot.service;
 
 import java.util.List;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,15 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class WebhookBotAdminImpl extends BaseTelegramWebhookBot implements WebhookBotAdmin{
 
-    public WebhookBotAdminImpl(TelegramBotAdminProperties properties) {
+    private final RegisterWebhookService registerWebhook;
+    public WebhookBotAdminImpl(TelegramBotAdminProperties properties, RegisterWebhookService registerWebhook) {
         super(properties);
+        this.registerWebhook = registerWebhook;
+    }
+
+    @PostConstruct
+    public void init(){
+        registerWebhook.registerWebhook(this);
     }
 
     @Async

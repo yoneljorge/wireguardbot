@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import dev.yonel.wireguardbot.bot.service.WebhookBotAdmin;
 import dev.yonel.wireguardbot.bot.service.WebhookBotClient;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
-import dev.yonel.wireguardbot.common.properties.SchedulerAutoSendMessageProperties;
 import lombok.extern.slf4j.Slf4j;
 
 @Lazy
@@ -25,9 +24,6 @@ public class MensajeColaService {
 
     @Autowired
     private WebhookBotAdmin webhookBotAdmin;
-
-    @Autowired
-    private SchedulerAutoSendMessageProperties schedulerProperties;
 
     private static final ConcurrentLinkedQueue<IncomingMessageTelegram> colaDeMensajes = new ConcurrentLinkedQueue<>();
     private static final ConcurrentHashMap<String, Boolean> mensajesProcesados = new ConcurrentHashMap<>();
@@ -42,20 +38,18 @@ public class MensajeColaService {
         }
 
         if (text != null) {
-            if (!text.equals(schedulerProperties.getMessage())) {
-                //FIXME quitar esto en produccion
-                log.info("Nuevo mensaje: {}", text);
-                String mensajeIdUnico = generarIdUnico(mensaje);
-                if (!mensajesProcesados.containsKey(mensajeIdUnico)) {
+            //FIXME quitar esto en produccion
+            log.info("Nuevo mensaje: {}", text);
+            String mensajeIdUnico = generarIdUnico(mensaje);
+            if (!mensajesProcesados.containsKey(mensajeIdUnico)) {
 
-                    //FIXME quitar esto en produccion
-                    log.info("Mensaje encolado: {}", text);
-                    colaDeMensajes.offer(mensaje);
-                    mensajesProcesados.put(mensajeIdUnico, true);
-                    procesarMensajesEnCola(); // Iniciar el procesamiento si es necesario
-                } else {
-                    log.info("Mensaje no encolado: {}", text);
-                }
+                //FIXME quitar esto en produccion
+                log.info("Mensaje encolado: {}", text);
+                colaDeMensajes.offer(mensaje);
+                mensajesProcesados.put(mensajeIdUnico, true);
+                procesarMensajesEnCola(); // Iniciar el procesamiento si es necesario
+            } else {
+                log.info("Mensaje no encolado: {}", text);
             }
         }
     }

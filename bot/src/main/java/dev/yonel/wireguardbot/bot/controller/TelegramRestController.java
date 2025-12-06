@@ -20,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/webhook-telegram")
+@RequestMapping("${telegram.path}")
 public class TelegramRestController {
 
     @Autowired

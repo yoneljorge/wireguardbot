@@ -4,16 +4,17 @@ server:
 spring:
   application:
     name: wireguardbot-agent
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    lease-renewal-interval-in-seconds: 15
-    lease-expiration-duration-in-seconds: 45
-    service-url:
-      defaultZone: ${EUREKA_CLIENT_SERVICE-URL_DEFAULT_ZONE}
-  instance:
-    prefer-ip-address: true
-    hostname: ${spring.application.name}
-    instance-id: ${INSTANCE_ID}
+  cloud:
+    consul:
+      host: ${CONSUL_HOST}
+      port: ${CONSUL_PORT}
+      discovery:
+        enabled: true
+        register: true
+        service-name: ${spring.application.name}
+        prefer-ip-address: true
+        ip-address: ${IP_ADDRESS:127.0.0.1}
+        instanceZone: local
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        instance-id: ${INSTANCE_ID:${spring.application.name}-${SERVER_PORT}}

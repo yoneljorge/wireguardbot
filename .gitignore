@@ -32,7 +32,10 @@ build/
 ### VS Code ###
 .vscode/
 agent/.env
-.agent.env
-.core.env
+.env.agent
+.env.core
 command_bot.txt
 addWebhookWireguardBot.sh
+/.env.agent
+/.env.core
+/qodana.yaml

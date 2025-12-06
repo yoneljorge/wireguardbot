@@ -24,6 +24,7 @@
 		<spring-cloud.version>2025.1.0</spring-cloud.version>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<telegram-bot-api.version>6.9.7.1</telegram-bot-api.version>
 	</properties>
 
 	<dependencies>
@@ -39,7 +40,6 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>-->
 	</dependencies>
-	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -58,11 +58,17 @@
 				<scope>import</scope>
 			</dependency>
 
-			
+			<!-- TELEGRAM -->
 			<dependency>
 				<groupId>org.telegram</groupId>
-				<artifactId>telegrambots-springboot-webhook-starter</artifactId>
-				<version>9.2.0</version>
+				<artifactId>telegrambots-spring-boot-starter</artifactId>
+				<version>${telegram-bot-api.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.github.pengrad</groupId>
+				<artifactId>java-telegram-bot-api</artifactId>
+				<version>9.2.1</version>
 			</dependency>
 
 			<!-- Simmetrics-->
@@ -79,7 +85,11 @@
 				<version>3.1.8</version>
 			</dependency>
 
-			<!-- Dependencias con Vulnerabilidades-->
+
+
+
+
+			<!-- DEPENDENCIAS CON VULNERABILIDADES-->
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
@@ -91,6 +101,30 @@
 				<artifactId>xstream</artifactId>
 				<version>1.4.21</version>
 			</dependency>
+
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>33.5.0-jre</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>1.6.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.grizzly</groupId>
+				<artifactId>grizzly-http</artifactId>
+				<version>4.1.0-M1</version>
+			</dependency>
+			<!-- DEPENDENCIAS CON VULNERABILIDADES -->
+
+
+
+
+
 
 			<!-- commons-configuration2 -->
 			<dependency>

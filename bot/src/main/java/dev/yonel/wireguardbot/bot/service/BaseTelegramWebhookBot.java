@@ -33,8 +33,6 @@ import dev.yonel.wireguardbot.common.context.UserSessionContext;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
-import dev.yonel.wireguardbot.common.properties.SchedulerAutoSendMessageProperties;
-import dev.yonel.wireguardbot.common.scheduler.send_auto_message.SendAutoMessageToTelegramBotClientScheduler;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,8 +41,6 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
     @Autowired
     protected TelegramPlatform telegramPlatform;
 
-    @Autowired
-    private SchedulerAutoSendMessageProperties autoSendProperties;
     @Autowired
     private TelegramBotAdminProperties telegramBotAdminProperties;
     @Autowired
@@ -80,9 +76,6 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
 
     @Override
     public BotApiMethod<?> onWebhookUpdateReceived(Update update) {
-        if (autoSendProperties.isActive()) {
-            SendAutoMessageToTelegramBotClientScheduler.resetCount();
-        }
 
         TypeWebhookTelegramBot bot = null;
 
