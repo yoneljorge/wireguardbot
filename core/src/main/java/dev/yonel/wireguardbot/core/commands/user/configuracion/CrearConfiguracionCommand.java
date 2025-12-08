@@ -18,6 +18,7 @@ import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotClientEvent
 import dev.yonel.wireguardbot.common.services.database.IpService;
 import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.core.client.WireGuardAgentClient;
+import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.BuildConfig;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.UserCommandInterface;
 import lombok.extern.slf4j.Slf4j;
@@ -134,7 +135,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
                      */
                     if (updateUser != null && updateUser.isPresent()) {
                         try {
-                            File configFile = buildConfig(wireguardServerProperties, user, peerDto);
+                            File configFile = BuildConfig.buildConfig(wireguardServerProperties, user, peerDto);
 
                             /*
                              * Creamos el nuevo peer que se va a agregar al servidor WireGuard.
@@ -229,31 +230,6 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
         }
     }
 
-    private File buildConfig(WireguardServerProperties properties, UserDto user, PeerDto peer) throws IOException {
-        StringBuilder config = new StringBuilder();
-        config.append("[Interface]").append("\n");
-        config.append("PrivateKey = ").append(peer.getPrivateKey()).append("\n");
-        config.append("Address = ").append(peer.getIpDto().getIpString()).append("\n");
-        config.append("DNS = 8.8.8.8, 1.1.1.1").append("\n").append("\n");
-
-        config.append("[Peer]").append("\n");
-        config.append("PublicKey = ").append(properties.getPublicKey()).append("\n");
-        config.append("Endpoint = ").append(properties.getAddress()).append(":").append(properties.getPort())
-                .append("\n");
-        config.append("AllowedIPs = 0.0.0.0/0, ::/0").append("\n");
-        config.append("PersistentKeepalive = 25").append("\n");
-
-        Integer[] ip = peer.getIpDto().getIp();
-        int octeto = ip[3];
-        File configFile = File.createTempFile(user.getUserName()
-                + octeto + properties.getName(), "conf");
-
-        try (FileWriter writer = new FileWriter(configFile);) {
-            writer.write(config.toString());
-        }
-
-        return configFile;
-    }
 
     private void notificarUsuario(UserDto user, String message, boolean removable) {
         /*
