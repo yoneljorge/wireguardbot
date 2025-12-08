@@ -26,7 +26,7 @@ public class WebhookBotAdminImpl extends BaseTelegramWebhookBot implements Webho
 
     @PostConstruct
     public void init(){
-        registerWebhook.registerWebhook(this);
+        registerWebhook.registerWebhook(BOT_TOKEN, BOT_PATH);
     }
 
     @Async

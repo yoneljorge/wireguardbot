@@ -15,7 +15,7 @@ import dev.yonel.wireguardbot.bot.components.custom.CustomSendMessage;
 
 @Slf4j
 @Component
-public class TelegramMessageBuilder {
+public class TelegramResponsesBuilder {
 
     public CustomSendMessage buildSendMessage(ResponseBody responseBody) {
         CustomSendMessage sendMessage = new CustomSendMessage();

@@ -29,6 +29,7 @@ public class MenuCommand extends CommandBase implements GeneralCommandInterface 
         createNewResponse(message, htmlBuilder.build());
         getCurrentResponse().setParseMode(TypeParseMode.HTML);
         getCurrentResponse().setButtons(buildMenuButtons());
+        getCurrentResponse().setRemovable(true);
         return getResponses();
     }
 
@@ -49,22 +50,22 @@ public class MenuCommand extends CommandBase implements GeneralCommandInterface 
     private List<Button> buildMenuButtons() {
         return List.of(
                 Button.builder()
-                        .callbackData("gestion")
+                        .callbackData("/menu_configuracion")
                         .text("🌐 Configuración")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData("pago")
+                        .callbackData("/menu_suscripcion")
                         .text("💸 Suscripción")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData("estadisticas")
+                        .callbackData("estatus")
                         .text("📈 Estatus")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData("referidos")
+                        .callbackData("/menu_referidos")
                         .text("🤝 Referidos")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),

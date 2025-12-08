@@ -17,7 +17,7 @@ public class PeerDto {
     private Long id;
     private String privateKey;
     private String publicKey;
-    private IpDto ip;
+    private IpDto ipDto;
     private LocalDate createdAt;
     private LocalDate paidUpTo;
     private boolean active;

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import dev.yonel.wireguardbot.common.context.SessionKey;
@@ -22,6 +23,9 @@ import dev.yonel.wireguardbot.message_manager.messages.NoEntendiMessages;
 
 @Component
 public class ConfiguracionCommand extends CommandBase implements UserCommandInterface {
+
+    @Autowired
+    private ConfiguracionCommandFactory commandFactory;
 
     public static final String EJECUCION_TERMINADA = "ejecucion_terminada";
     public static final String NAME = "configuracion";
@@ -84,22 +88,24 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                 }
 
                 case OPCION_OBTENER -> {
-                    addResponses(ConfiguracionCommandFactory.getCommand(ObtenerConfiguracionCommand.NAME).execute(messageBody, context));
+                    addResponses(commandFactory.getCommand(ObtenerConfiguracionCommand.NAME).execute(messageBody, context));
                     break;
                 }
 
                 case OPCION_CREAR -> {
-                    addResponses(ConfiguracionCommandFactory.getCommand(CrearConfiguracionCommand.NAME).execute(messageBody, context));
+                    addResponses(commandFactory.getCommand(CrearConfiguracionCommand.NAME).execute(messageBody, context));
+                    context.getBotSession(messageBody.getTypeBot()).reset();
                     break;
                 }
 
                 case OPCION_ELIMINAR -> {
-                    addResponses(ConfiguracionCommandFactory.getCommand(EliminarConfiguracionCommand.NAME).execute(messageBody, context));
+                    addResponses(commandFactory.getCommand(EliminarConfiguracionCommand.NAME).execute(messageBody, context));
                     break;
                 }
 
                 default -> {
                     createNewResponse(messageBody, NoEntendiMessages.noEntendi());
+                    getCurrentResponse().setRemovable(true);
                     break;
                 }
             }
@@ -144,6 +150,7 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build());
         getCurrentResponse().setButtons(buttons);
+        getCurrentResponse().setRemovable(true);
     }
 
     private String option(String text) {

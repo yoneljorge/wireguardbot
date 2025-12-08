@@ -1,8 +1,8 @@
 package dev.yonel.wireguardbot.bot.service;
 
-import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
+import dev.yonel.wireguardbot.common.events.DeleteMessageEvent;
 
 public interface MessageDeletionHandler {
 
-    void handleMessageRelayToDeleteMessage(MessageRelayToDeleteMessageEvent event);
+    void handleDeleteMessage(DeleteMessageEvent event);
 }

@@ -12,18 +12,18 @@ import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardKeyPair;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeerResponse;
 
-@FeignClient(name = "agent", path = "/wireguard")
+@FeignClient(name = "wireguardbot-agent", path = "/wireguard")
 public interface WireGuardAgentClient {
 
     @GetMapping("/generate-keys")
     ResponseEntity<WireGuardKeyPair> generateKeyPair();
 
-    @PostMapping("/{wg}/peer")
-    ResponseEntity<WireGuardPeerResponse> addPeer(@PathVariable("wg") String wg, @RequestBody WireGuardPeer peer);
+    @PostMapping("/{wg}/peer/add")
+    ResponseEntity<WireGuardPeerResponse> addPeer(@PathVariable String wg, @RequestBody WireGuardPeer peer);
 
-    @DeleteMapping("/{wg}/peer/{publicKey}")
-    ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable("wg") String wg, @PathVariable("publicKey") String publicKey);
+    @DeleteMapping("/{wg}/peer/remove/{publicKey}")
+    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg, @PathVariable String publicKey);
 
-    @GetMapping("/{wg}/peer/{publicKey}/exists")
-    ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable("wg") String wg, @PathVariable("publicKey") String publicKey);
+    @GetMapping("/{wg}/peer/exists/{publicKey}")
+    public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @PathVariable String publicKey);
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import dev.yonel.wireguardbot.bot.components.DeleteMessageEventComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -32,7 +33,7 @@ import dev.yonel.wireguardbot.common.context.SessionManager;
 import dev.yonel.wireguardbot.common.context.UserSessionContext;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
-import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
+import dev.yonel.wireguardbot.common.events.DeleteMessageEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -42,13 +43,16 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
     protected TelegramPlatform telegramPlatform;
 
     @Autowired
+    private DeleteMessageEventComponent deleteMessageEventComponent;
+
+    @Autowired
     private TelegramBotAdminProperties telegramBotAdminProperties;
     @Autowired
     private TelegramBotClientProperties telegramBotClientProperties;
 
-    private final String BOT_TOKEN;
-    private final String BOT_USERNAME;
-    private final String BOT_PATH;
+    protected final String BOT_TOKEN;
+    protected final String BOT_USERNAME;
+    protected final String BOT_PATH;
 
     public BaseTelegramWebhookBot(TelegramBotPropertiesInterface telegramBotProperties) {
         super(new TelegramBotCustomOptions(), telegramBotProperties.getToken());
@@ -116,8 +120,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
 
         if (update.getMessage().hasPhoto()) {
             try {
-                List<Object> response = convertToObject(telegramPlatform.receivedImageMessageFromPrivate(update,
-                        getFileUrl(update), bot));
+                List<Object> response = convertToObject(telegramPlatform.receivedRequestMessageFromPrivate(bot, update, getFileUrl(update)));
                 handleResponse(response, bot);
                 return;
             } catch (Exception e) {
@@ -128,7 +131,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
         if (messageText != null) {
             try {
                 List<Object> response = convertToObject(
-                        telegramPlatform.receivedMessageFromPrivate(update, bot));
+                        telegramPlatform.receivedRequestMessageFromPrivate(bot, update, null));
                 handleResponse(response, bot);
                 return;
             } catch (Throwable e) {
@@ -170,7 +173,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
                 userId);
         try {
             handleResponse(convertToObject(telegramPlatform.removeButtons(update, new ResponseBody())), bot);
-            handleResponse(convertToObject(telegramPlatform.receivedFromButtons(update, bot)), bot);
+            handleResponse(convertToObject(telegramPlatform.receivedRequestMessageFromPrivate(bot, update, null)), bot);
         } catch (TelegramApiException e) {
             log.error("Error al procesar CallbackQuery: {}", e.getMessage(), e);
         } catch (Throwable e) {
@@ -195,6 +198,10 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
             switch (response) {
                 case CustomSendMessage sendMessage -> {
                     try {
+                        deleteMessageEventComponent.deleteMessages(
+                                sendMessage.getChatId(),
+                               SessionManager.getContext(Long.parseLong(sendMessage.getChatId())),
+                                bot);
                         if (sendMessage.isRemovable()) {
                             log.info("marcando mensaje para eliminar");
                             Message message = execute(sendMessage);
@@ -209,6 +216,10 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
                 }
                 case CustomEditMessageText editMessageText -> {
                     try {
+                        deleteMessageEventComponent.deleteMessages(
+                                editMessageText.getChatId(),
+                                SessionManager.getContext(Long.parseLong(editMessageText.getChatId())),
+                                bot);
                         execute(editMessageText);
                     } catch (TelegramApiException e) {
                         log.error("Error enviando EditMessageText: {}", e.getMessage());
@@ -216,6 +227,10 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
                 }
                 case CustomEditMessageReplyMarkup editMessageReplyMarkup -> {
                     try {
+                        deleteMessageEventComponent.deleteMessages(
+                                editMessageReplyMarkup.getChatId(),
+                                SessionManager.getContext(Long.parseLong(editMessageReplyMarkup.getChatId())),
+                                bot);
                         execute(editMessageReplyMarkup);
                     } catch (TelegramApiException e) {
                         log.error("Error enviando EditMessageReplyMarkup: {}", e.getMessage());
@@ -224,6 +239,10 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
 
                 case CustomSendDocument sendDocument -> {
                     try{
+                        deleteMessageEventComponent.deleteMessages(
+                                sendDocument.getChatId(),
+                                SessionManager.getContext(Long.parseLong(sendDocument.getChatId())),
+                                bot);
                         execute(sendDocument);
                     }catch(TelegramApiException e){
                         log.error("Error enviando CustomSendDocument: {}", e.getMessage());
@@ -232,6 +251,10 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
 
                 case SendDocument sendDocument -> {
                     try {
+                        deleteMessageEventComponent.deleteMessages(
+                                sendDocument.getChatId(),
+                                SessionManager.getContext(Long.parseLong(sendDocument.getChatId())),
+                                bot);
                         execute(sendDocument);
                     } catch (TelegramApiException e) {
                         log.error("Error enviando SendDocument: {}", e.getMessage());
@@ -309,7 +332,7 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
 
     @Async
     @EventListener
-    public void handleMessageRelayToDeleteMessage(MessageRelayToDeleteMessageEvent event) {
+    public void handleDeleteMessage(DeleteMessageEvent event) {
 
         DeleteMessage deleteMessage = new DeleteMessage();
         deleteMessage.setChatId(event.getChatId());

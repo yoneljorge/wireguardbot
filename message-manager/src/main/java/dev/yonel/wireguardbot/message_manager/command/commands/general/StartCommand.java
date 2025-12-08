@@ -153,8 +153,8 @@ public class StartCommand extends CommandBase implements GeneralCommandInterface
                  * responden mensajes que tengan que ver con la administración.
                  */
                 if (messageBody.getTypeBot() == TypeWebhookTelegramBot.CLIENT) {
-                    createNewResponse(messageBody, StartMessages.getMessageDefault());
-                    getCurrentResponse().setParseMode(TypeParseMode.HTML);
+                    createNewResponse(messageBody);
+                    StartMessages.getMessageDefault(getCurrentResponse());
                     getCurrentResponse().setRemovable(true);
                 } else if (messageBody.getTypeBot() == TypeWebhookTelegramBot.ADMIN) {
                     createNewResponse(messageBody,

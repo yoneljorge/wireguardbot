@@ -61,7 +61,15 @@ public class CommandBase {
         if (responses.isEmpty()) {
             throw new IllegalStateException("No hay respuestas inicializadas");
         }
-        return responses.get(responses.size() - 1);
+        return responses.getLast();
+    }
+
+    protected void updateCurrentResponse(ResponseBody responseBody){
+        if (responseBody == null) {
+            throw new IllegalArgumentException("ResponseBody no puede ser null.");
+        }
+        this.responses.add(this.responses.size() -1, responseBody);
+
     }
 
     protected ResponseBody getResponse(int index) {

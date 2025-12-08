@@ -25,9 +25,7 @@ public class AgentApplication {
                 .filename(".env.agent")
                 .load();
                 log.info("Cargando variables desde .env.agent");
-                dotenv.entries().forEach(entry -> {
-                    System.setProperty(entry.getKey(), entry.getValue());
-                });
+                dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
             }
         } catch (Exception e) {
             log.info("Error cargando variables locales");

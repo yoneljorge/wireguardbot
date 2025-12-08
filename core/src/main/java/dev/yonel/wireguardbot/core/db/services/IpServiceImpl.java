@@ -13,7 +13,7 @@ public class IpServiceImpl implements IpService{
 
     private final IpRepository ipRepository;
     private final String BASE_IP_SUBNET_PREFIX = "10.0.0."; // Prefijo de la IP
-    private final int MIN_IP_OCTET = 2; // Rango inferior para el último octeto
+    private final int MIN_IP_OCTET = 10; // Rango inferior para el último octeto
     private final int MAX_IP_OCTET = 254; // Rango superior para el último octeto
 
     public IpServiceImpl(IpRepository ipRepository){

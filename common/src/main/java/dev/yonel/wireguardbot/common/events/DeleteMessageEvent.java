@@ -5,11 +5,11 @@ import java.util.EventObject;
 import lombok.Getter;
 
 @Getter
-public class MessageRelayToDeleteMessageEvent extends EventObject {
-    private long chatId;
-    private int messageId;
+public class DeleteMessageEvent extends EventObject {
+    private final String chatId;
+    private final int messageId;
     
-    public MessageRelayToDeleteMessageEvent(Object source, long chatId, int messageId){
+    public DeleteMessageEvent(Object source, String chatId, int messageId){
         super(source);
         this.chatId = chatId;
         this.messageId = messageId;

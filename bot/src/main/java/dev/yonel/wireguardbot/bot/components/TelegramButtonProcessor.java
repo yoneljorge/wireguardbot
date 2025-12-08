@@ -26,44 +26,18 @@ public class TelegramButtonProcessor {
     private MessageRelayService messageRelayService;
 
     @Autowired
-    private TelegramMessageBuilder messageBuilder;
+    private TelegramResponsesBuilder responsesBuilder;
 
     @Autowired
     private TelegramUserManager userManager;
 
-    public List<CustomSendMessage> processButtonClick(Update update, TypeWebhookTelegramBot bot) throws Throwable {
-        if (update.getCallbackQuery() == null) {
-            log.warn("No se encontró callbackQuery");
-            return null;
-        }
-
-        MessageBody messageBody = userManager.createMessageBodyFromCallback(update, bot);
-        List<ResponseBody> responses = messageRelayService.handleMessage(messageBody);
-
-        if (responses == null || responses.isEmpty()) {
-            log.warn("No se recibió respuesta válida del botón.");
-            return null;
-        }
-
-        List<CustomSendMessage> messages = new ArrayList<>();
-
-        for (ResponseBody resp : responses) {
-            messages.add(messageBuilder.buildSendMessage(resp));
-        }
-
-        MensajeColaService.removeMensajesProcesados(bot, String.valueOf(messageBody.getUserid()),
-                messageBody.getUpdateid());
-
-        return messages;
-    }
-
-    public List<CustomEditMessageText> processEditMessageText(Update update, TypeWebhookTelegramBot bot) throws Throwable {
+    public List<CustomEditMessageText> processEditMessageText(TypeWebhookTelegramBot bot, Update update, String fileUrl) throws Throwable {
         if (update.getCallbackQuery() == null) {
             log.warn("No se encontró callbackQuery.");
             return null;
         }
 
-        MessageBody messageBody = userManager.createMessageBodyFromCallback(update, bot);
+        MessageBody messageBody = userManager.createMessageBody(bot, update, fileUrl);
         List<ResponseBody> responses = messageRelayService.handleMessage(messageBody);
 
         if (responses == null || responses.isEmpty()) {
@@ -75,7 +49,7 @@ public class TelegramButtonProcessor {
 
         for (ResponseBody resp : responses) {
             messages.add(
-                    messageBuilder.buildEditMessageText(resp, update.getCallbackQuery().getMessage().getMessageId()));
+                    responsesBuilder.buildEditMessageText(resp, update.getCallbackQuery().getMessage().getMessageId()));
         }
 
         MensajeColaService.removeMensajesProcesados(bot, String.valueOf(messageBody.getUserid()),
@@ -86,7 +60,7 @@ public class TelegramButtonProcessor {
 
     public List<CustomEditMessageReplyMarkup> processEditButtons(Update update, ResponseBody responseBody) {
         try {
-            return List.of(messageBuilder.buildEditMessageReplyMarkup(responseBody,
+            return List.of(responsesBuilder.buildEditMessageReplyMarkup(responseBody,
                     update.getCallbackQuery().getMessage().getMessageId(),
                     update.getCallbackQuery().getMessage().getChatId()));
         } catch (Exception e) {
@@ -97,7 +71,7 @@ public class TelegramButtonProcessor {
 
     public List<CustomEditMessageReplyMarkup> processRemoveButtons(Update update, ResponseBody responseBody) {
         try {
-            return List.of(messageBuilder.buildEditMessageReplyMarkup(responseBody,
+            return List.of(responsesBuilder.buildEditMessageReplyMarkup(responseBody,
                     update.getCallbackQuery().getMessage().getMessageId(),
                     update.getCallbackQuery().getMessage().getChatId()));
         } catch (Exception e) {

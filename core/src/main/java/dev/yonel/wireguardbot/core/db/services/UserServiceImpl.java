@@ -129,24 +129,21 @@ public class UserServiceImpl implements UserService {
         if (user.getPeers() == null) {
             return peers;
         }
-
         for (PeerDto p : user.getPeers()) {
-
             PeerEntity peer = PeerEntity.builder()
                     .id(p.getId())
+
                     .privateKey(p.getPrivateKey())
                     .publicKey(p.getPublicKey())
+                    .user(UserEntity.builder().id(user.getId()).build())
+                    .ipEntity(IpEntity.builder()
+                            .id(p.getIpDto().getId())
+                            .ipAddress(p.getIpDto().getIpString())
+                            .build())
                     .createdAt(p.getCreatedAt())
                     .paidUpTo(p.getPaidUpTo())
                     .active(p.isActive())
                     .build();
-
-            IpEntity ip = new IpEntity();
-            ip.setId(p.getIp().getId());
-            ip.setIpAddress(p.getIp().getIpString());
-
-            peer.setIp(ip);
-
             peers.add(peer);
         }
         return peers;
@@ -170,10 +167,10 @@ public class UserServiceImpl implements UserService {
                     .build();
 
             IpDto ip = new IpDto();
-            ip.setId(p.getIp().getId());
-            ip.setIpString(p.getIp().getIpAddress());
+            ip.setId(p.getIpEntity().getId());
+            ip.setIpString(p.getIpEntity().getIpAddress());
 
-            dto.setIp(ip);
+            dto.setIpDto(ip);
 
             peers.add(dto);
         }

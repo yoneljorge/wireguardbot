@@ -78,7 +78,7 @@ public class UserSessionContext {
         }
 
         /**
-         * Elimina el ultimo flujo de conversación activo para este usuario.
+         * Elimina el último flujo de conversación activo para este usuario.
          * Al eliminar un flujo de conversación, se reinicia el paso actual a 0.
          */
         public void removeActiveFlow() {
@@ -109,7 +109,7 @@ public class UserSessionContext {
          * eliminar todos los datos temporales almacenados.
          */
         public void reset() {
-            this.flowList = new ArrayList<>();
+            this.flowList.clear();
             this.step = 0;
             this.data.clear();
         }

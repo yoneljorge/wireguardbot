@@ -16,7 +16,7 @@ import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeSendExecution;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
-import dev.yonel.wireguardbot.common.events.MessageRelayToDeleteMessageEvent;
+import dev.yonel.wireguardbot.common.events.DeleteMessageEvent;
 import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
@@ -50,7 +50,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
          */
         if (context.getBotSession(messageBody.getTypeBot()).isPendingMessageToDelete()) {
             for (int messageId : context.getBotSession(messageBody.getTypeBot()).getMessagesIdToDelete()) {
-                publisher.publishEvent(new MessageRelayToDeleteMessageEvent(this, messageBody.getUserid(), messageId));
+                publisher.publishEvent(new DeleteMessageEvent(this, messageBody.getUserid().toString(), messageId));
             }
         }
 

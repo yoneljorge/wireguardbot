@@ -28,24 +28,18 @@ public class TelegramPlatform {
 	@Autowired
 	private TelegramUserManager userManager;
 
-	public List<CustomSendMessage> receivedMessageFromPrivate(Object updateObject,
-			TypeWebhookTelegramBot bot) throws Throwable {
+	public List<Object> receivedRequestMessageFromPrivate(
+            TypeWebhookTelegramBot bot,
+            Object updateObject,
+			String fileUrl) throws Throwable {
 		try {
-			return messageProcessor.processTextMessage((Update) updateObject, bot);
+			return messageProcessor.processRequestMessage(bot, (Update) updateObject, fileUrl);
 		} catch (Exception e) {
-			return null;
+			e.printStackTrace();
+            return null;
 		}
 	}
 
-	public List<CustomSendMessage> receivedImageMessageFromPrivate(Object updateObject,
-			String fileUrl, TypeWebhookTelegramBot bot) throws Throwable {
-		try {
-			return messageProcessor.processImageMessage((Update) updateObject, fileUrl, bot);
-		} catch (Exception e) {
-			return null;
-		}
-
-	}
 
 	public void receivedMessageFromGroup() {
 
@@ -62,23 +56,16 @@ public class TelegramPlatform {
 
 	public List<Object> onReceivedEventFromMessageRelay(List<ResponseBody> responses) {
 		try {
-			return messageProcessor.processResponseFromMessageRelay(responses);
+			return messageProcessor.processResponses(responses);
 		} catch (Exception e) {
 			return null;
 		}
 	}
 
-	public List<CustomSendMessage> receivedFromButtons(Object updateObject, TypeWebhookTelegramBot bot) throws Throwable {
-		try {
-			return buttonProcessor.processButtonClick((Update) updateObject, bot);
-		} catch (Exception e) {
-			return null;
-		}
-	}
 
-	public List<CustomEditMessageText> editMessageText(Object updateObject, TypeWebhookTelegramBot bot) throws Throwable {
+	public List<CustomEditMessageText> editMessageText(TypeWebhookTelegramBot bot, Object updateObject, String fileUrl) throws Throwable {
 		try {
-			return buttonProcessor.processEditMessageText((Update) updateObject, bot);
+			return buttonProcessor.processEditMessageText(bot, (Update) updateObject, fileUrl);
 		} catch (Exception e) {
 			return null;
 		}

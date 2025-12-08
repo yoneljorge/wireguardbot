@@ -12,14 +12,14 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageTypeSelector {
 
     @Autowired
-    private TelegramMessageBuilder messageBuilder;
+    private TelegramResponsesBuilder messageBuilder;
 
     /**
      * Selecciona automáticamente el tipo de mensaje basándose en el ResponseBody.
      * 
      * Prioridad de detección:
-     * 1. Si hay un File en el ResponseBody -> SEND_DOCUMENT
-     * 2. Si hay un typeSendExecution explícito -> usar ese tipo
+     * 1. Sí hay un File en el ResponseBody -> SEND_DOCUMENT
+     * 2. Sí hay un typeSendExecution explícito -> usar ese tipo
      * 3. Por defecto -> SEND_MESSAGE
      * 
      * @param responseBody El ResponseBody a procesar

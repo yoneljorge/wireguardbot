@@ -24,82 +24,44 @@ public class TelegramUserManager {
     @Autowired
     private ApplicationEventPublisher publisher;
 
-    public MessageBody createMessageBodyFromMessage(Update update, TypeWebhookTelegramBot bot) {
+    public MessageBody createMessageBody(TypeWebhookTelegramBot bot, Update update, String fileUrl) {
         MessageBody messageBody = new MessageBody();
-        Message message = update.getMessage();
-        User user = message.getFrom();
 
-        // Validar que el mensaje y el usuario no sean nulos
-        if (message == null || user == null) {
-            log.warn("Mensaje o usuario nulo en update: {}", update);
-            return messageBody; // Retornamos un MessageBody vacío pero no nulo
+        if (update.getMessage() != null){
+            Message message = update.getMessage();
+            User user = message.getFrom();
+            // Validar que el usuario no sea nulo
+            if (user == null) {
+                log.warn("Usuario nulo en update: {}", update);
+                return messageBody; // Retornamos un MessageBody vacío pero no nulo
+            }
+            messageBody.setChatid(message.getChatId());
+            messageBody.setMessageId(message.getMessageId());
+            messageBody.setUserid(user.getId());
+            // Usar valores por defecto si alguno es nulo
+            messageBody.setFirstName(user.getFirstName() != null ? user.getFirstName() : "");
+            messageBody.setLastName(user.getLastName() != null ? user.getLastName() : "");
+            messageBody.setUserName(user.getUserName() != null ? user.getUserName() : "");
+            messageBody.setMessage(message.getText() != null ? message.getText() : "");
         }
 
-        messageBody.setChatid(message.getChatId());
-        messageBody.setMessageId(message.getMessageId());
-        messageBody.setUserid(user.getId());
-        messageBody.setUpdateid(update.getUpdateId());
 
-        // Usar valores por defecto si alguno es nulo
-        messageBody.setFirstName(user.getFirstName() != null ? user.getFirstName() : "");
-        messageBody.setLastName(user.getLastName() != null ? user.getLastName() : "");
-        messageBody.setUserName(user.getUserName() != null ? user.getUserName() : "");
+        if (update.getCallbackQuery() != null) {
+            messageBody.setChatid(update.getCallbackQuery().getMessage().getChatId());
+            messageBody.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
+            messageBody.setUserid(update.getCallbackQuery().getFrom().getId());
 
-        messageBody.setTelefono(extractPhoneNumber(update));
-        messageBody.setMessage(message.getText() != null ? message.getText() : "");
-
-        messageBody.setTypeBot(bot);
-
-        checkGroupMembership(update, messageBody);
-        return messageBody;
-    }
-
-    public MessageBody createMessageBodyFromImageMessage(Update update, String fileUrl,
-            TypeWebhookTelegramBot bot) {
-        MessageBody messageBody = new MessageBody();
-        Message message = update.getMessage();
-        User user = message.getFrom();
-
-        if (message == null || user == null) {
-            log.warn("Mensaje o usuario nulo en update: {}", update);
-            return messageBody; // Retornamos un MessageBody vacío pero no nulo
+            messageBody.setFirstName(update.getCallbackQuery().getFrom().getFirstName());
+            messageBody.setLastName(update.getCallbackQuery().getFrom().getLastName());
+            messageBody.setUserName(update.getCallbackQuery().getFrom().getUserName());
+            messageBody.setMessage(update.getCallbackQuery().getData());
         }
 
-        messageBody.setChatid(message.getChatId());
-        messageBody.setMessageId(message.getMessageId());
-        messageBody.setUserid(user.getId());
         messageBody.setUpdateid(update.getUpdateId());
-
-        // Usar valores por defecto si alguno es nulo
-        messageBody.setFirstName(user.getFirstName() != null ? user.getFirstName() : "");
-        messageBody.setLastName(user.getLastName() != null ? user.getLastName() : "");
-        messageBody.setUserName(user.getUserName() != null ? user.getUserName() : "");
         messageBody.setTelefono(extractPhoneNumber(update));
-        messageBody.setMessage(message.getText() != null ? message.getText() : "");
-
         messageBody.setFileUrl(fileUrl);
-
         messageBody.setTypeBot(bot);
 
-        checkGroupMembership(update, messageBody);
-        return messageBody;
-    }
-
-    public MessageBody createMessageBodyFromCallback(Update update, TypeWebhookTelegramBot bot) {
-        MessageBody messageBody = new MessageBody();
-
-        messageBody.setChatid(update.getCallbackQuery().getMessage().getChatId());
-        messageBody.setMessageId(update.getCallbackQuery().getMessage().getMessageId());
-        messageBody.setUserid(update.getCallbackQuery().getFrom().getId());
-        messageBody.setUpdateid(update.getUpdateId());
-        messageBody.setFirstName(update.getCallbackQuery().getFrom().getFirstName());
-        messageBody.setLastName(update.getCallbackQuery().getFrom().getLastName());
-        messageBody.setUserName(update.getCallbackQuery().getFrom().getUserName());
-        messageBody.setTelefono(extractPhoneNumber(update));
-        messageBody.setMessage(update.getCallbackQuery().getData());
-        messageBody.setTypeBot(bot);
-
-        checkGroupMembership(update, messageBody);
         return messageBody;
     }
 
@@ -121,17 +83,6 @@ public class TelegramUserManager {
         }
 
         publisher.publishEvent(new RegisterNewUsersFromGroupEvent(this, listMessageBody));
-    }
-
-    private void checkGroupMembership(Update update, MessageBody messageBody) {
-        try {
-            if (update.getMessage().getChat().getTitle().equals("Super Lottery")) {
-                messageBody.setGroup(true);
-                messageBody.setGroupTitle("Super Lottery");
-            }
-        } catch (Exception e) {
-            // No es un grupo o no tiene título
-        }
     }
 
     private String extractPhoneNumber(Update update) {

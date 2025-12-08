@@ -2,6 +2,7 @@ package dev.yonel.wireguardbot.message_manager.command.utils;
 
 import java.util.Optional;
 
+import dev.yonel.wireguardbot.message_manager.command.commands.general.StartCommand;
 import org.simmetrics.StringMetric;
 import org.simmetrics.metrics.StringMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class CommandDetector {
 
     @Autowired
     private ErrorCommand errorCommand;
+
+    @Autowired
+    private StartCommand startCommand;
 
     private static final StringMetric metric = StringMetrics.levenshtein();
     private final UserCommandRegistry userCommandRegistry;
@@ -143,12 +147,12 @@ public class CommandDetector {
                 }
 
             if (bestMatch == null) {
-                return userCommandRegistry.getCommands().getFirst();
+                return startCommand;
             }
 
             return bestMatch;
         } catch (Exception e) {
-            log.error("Error findBestMatch - CommandDetector: ", e.getMessage());
+            log.error("Error findBestMatch - CommandDetector: {}", e.getMessage());
             return errorCommand;
         }
     }
@@ -168,12 +172,12 @@ public class CommandDetector {
             }
 
             if (bestMatch == null) {
-                return userCommandRegistry.getCommands().getFirst();
+                return startCommand;
             }
 
             return bestMatch;
         } catch (Exception e) {
-            log.error("Error findBestMatch - CommandDetector: ", e.getMessage());
+            log.error("Error findBestMatch - CommandDetector: {}", e.getMessage());
             return errorCommand;
         }
     }
