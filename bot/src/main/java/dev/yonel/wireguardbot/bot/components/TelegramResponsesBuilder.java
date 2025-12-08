@@ -1,6 +1,7 @@
 
 package dev.yonel.wireguardbot.bot.components;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
@@ -12,12 +13,24 @@ import dev.yonel.wireguardbot.bot.components.custom.CustomEditMessageText;
 import dev.yonel.wireguardbot.bot.components.custom.CustomSendDocument;
 import dev.yonel.wireguardbot.bot.components.custom.CustomSendMessage;
 
+@Slf4j
 @Component
 public class TelegramMessageBuilder {
 
     public CustomSendMessage buildSendMessage(ResponseBody responseBody) {
         CustomSendMessage sendMessage = new CustomSendMessage();
-        sendMessage.setChatId(responseBody.getChatid());
+        if (responseBody.getChatid() != null) {
+            sendMessage.setChatId(responseBody.getChatid());
+        }
+        /*
+         * En caso de que el chatId sea un null entonces se pasa el userId que es prácticamente lo mismo.
+         */
+        else if (responseBody.getUserid() != null) {
+            sendMessage.setChatId(responseBody.getUserid());
+        } else {
+            log.error("No se puede construir el mensaje falta chatId o userId");
+            throw new IllegalArgumentException("Falta chatId o userId en el ResponseBody.");
+        }
 
         if (responseBody.getParseMode() != null) {
             sendMessage.setParseMode(responseBody.getParseMode().getValue());
