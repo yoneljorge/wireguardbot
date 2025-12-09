@@ -57,10 +57,10 @@ public class WireGuardController {
         }
     }
 
-    @DeleteMapping("/{wg}/peer/remove/{publicKey}")
-    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg, @PathVariable String publicKey) {
+    @DeleteMapping("/{wg}/peer/remove")
+    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg, @RequestBody WireGuardPeer peer) {
         try {
-            wireGuardPeerService.removePeer(wg, publicKey);
+            wireGuardPeerService.removePeer(wg, peer);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
                     .success(true)
                     .message("Peer eliminado exitosamente")
@@ -81,10 +81,10 @@ public class WireGuardController {
         }
     }
 
-    @GetMapping("/{wg}/peer/exists/{publicKey}")
-    public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @PathVariable String publicKey) {
+    @GetMapping("/{wg}/peer/exists")
+    public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @RequestBody WireGuardPeer peer) {
         try {
-            boolean exists = wireGuardPeerService.peerExists(wg, publicKey);
+            boolean exists = wireGuardPeerService.peerExists(wg, peer);
             return ResponseEntity.ok(WireGuardPeerResponse.builder()
                     .success(true)
                     .message(exists ? "El peer existe" : "El peer no existe")

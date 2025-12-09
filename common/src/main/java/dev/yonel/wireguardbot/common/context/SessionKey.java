@@ -3,7 +3,11 @@ package dev.yonel.wireguardbot.common.context;
 public enum SessionKey {
 
     COMMAND_START_ESPERAR_USERNAME("command_start_esperar_username"),
-    GESTION_COMMAND_OPCION("gestion_command_opcion");
+
+    CONFIGURACION_COMMAND_OPCION("configuracion_command_opcion"),
+
+    ELIMINAR_CONFIGURACION_COMMAND_ESPERAR("esperarBotonTerminar?"),
+    ELIMINAR_CONFIGURACION_COMMAND_MAP_PEERS_PUBLIC_KEY("eliminar configuraicon command map peers public key");
 
     private final String key;
 

@@ -1,10 +1,8 @@
 package dev.yonel.wireguardbot.core.commands.user.configuracion;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +16,7 @@ import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotClientEvent
 import dev.yonel.wireguardbot.common.services.database.IpService;
 import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.core.client.WireGuardAgentClient;
-import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.BuildConfig;
+import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.ConfiguracionCommandUtils;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.UserCommandInterface;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +26,6 @@ import dev.yonel.wireguardbot.common.context.UserSessionContext;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -39,8 +36,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
     public static final String NAME = "/crear_configuracion";
     public static final String[] ALIASES = {"/crear_configuracion", "crear configuracion", "crear perfil"};
 
-    @Autowired
-    private DiscoveryClient discoveryClient;
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -51,6 +47,8 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
     private WireguardServerProperties wireguardServerProperties;
     @Autowired
     private ApplicationEventPublisher publisher;
+    @Autowired
+    private ConfiguracionCommandUtils configuracionCommandUtils;
 
     @Override
     public List<ResponseBody> execute(MessageBody messageBody, UserSessionContext context){
@@ -58,7 +56,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
         initialize();
 
         try{
-            if (!isActiveAgent()) {
+            if (configuracionCommandUtils.isNotActiveAgent()) {
                 createNewResponse(messageBody,
                         "⚠️ El servicio de WireGuard no está disponible en este momento. Por favor, intenta más tarde.");
                 getCurrentResponse().setRemovable(true);
@@ -135,7 +133,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
                      */
                     if (updateUser != null && updateUser.isPresent()) {
                         try {
-                            File configFile = BuildConfig.buildConfig(wireguardServerProperties, user, peerDto);
+                            File configFile = configuracionCommandUtils.buildConfig(wireguardServerProperties, user, peerDto);
 
                             /*
                              * Creamos el nuevo peer que se va a agregar al servidor WireGuard.
@@ -214,20 +212,6 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
     @Override
     public String[] getAliases() {
         return new String[]{"/crear_configuracion", "crear configuracion", "crear perfil"};
-    }
-
-    /**
-     * Verifica que exista una instancia de Agent.
-     *
-     * @return <code>true</code> en caso de que exista una.
-     */
-    private boolean isActiveAgent() {
-        final String agentServiceName = "wireguardbot-agent";
-        if (discoveryClient != null && !discoveryClient.getInstances(agentServiceName).isEmpty()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
 

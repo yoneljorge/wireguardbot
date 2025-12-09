@@ -49,26 +49,26 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
         if (Match.findMaxSimilarity(messageBody.getMessage(), ATRAS_ALIASES) > 0.80) {
             context.getBotSession(messageBody.getTypeBot()).cleanData();
             context.getBotSession(messageBody.getTypeBot()).resetStep();
-            context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.GESTION_COMMAND_OPCION, OPCION_ATRAS);
+            context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.CONFIGURACION_COMMAND_OPCION, OPCION_ATRAS);
         }
 
         if (context.getBotSession(messageBody.getTypeBot()).getActiveFlow().isBlank()) {
             buildMenu(messageBody);
             context.getBotSession(messageBody.getTypeBot()).setActiveFlow(getName());
         } else {
-            if (context.getBotSession(messageBody.getTypeBot()).getData(SessionKey.GESTION_COMMAND_OPCION) != null) {
-                option = context.getBotSession(messageBody.getTypeBot()).getData(SessionKey.GESTION_COMMAND_OPCION);
+            if (context.getBotSession(messageBody.getTypeBot()).getData(SessionKey.CONFIGURACION_COMMAND_OPCION) != null) {
+                option = context.getBotSession(messageBody.getTypeBot()).getData(SessionKey.CONFIGURACION_COMMAND_OPCION);
                 if (option.isBlank() || option.equals(EJECUCION_TERMINADA)) {
                     option = option(messageBody.getMessage());
                     if (option != null) {
-                        context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.GESTION_COMMAND_OPCION,
+                        context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.CONFIGURACION_COMMAND_OPCION,
                                 option);
                     }
                 }
             } else {
                 option = option(messageBody.getMessage());
                 if (option != null) {
-                    context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.GESTION_COMMAND_OPCION, option);
+                    context.getBotSession(messageBody.getTypeBot()).putData(SessionKey.CONFIGURACION_COMMAND_OPCION, option);
                 }
             }
 

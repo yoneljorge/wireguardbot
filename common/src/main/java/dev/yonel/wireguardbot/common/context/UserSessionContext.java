@@ -81,9 +81,9 @@ public class UserSessionContext {
          * Elimina el último flujo de conversación activo para este usuario.
          * Al eliminar un flujo de conversación, se reinicia el paso actual a 0.
          */
-        public void removeActiveFlow() {
+        public void removeLastActiveFlow() {
             if (!flowList.isEmpty()) {
-                flowList.remove(flowList.size() - 1);
+                flowList.removeLast();
             }
             this.step = 0;
         }

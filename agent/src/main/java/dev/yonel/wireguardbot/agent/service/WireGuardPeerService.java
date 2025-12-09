@@ -52,11 +52,11 @@ public class WireGuardPeerService {
      * Elimina un peer de la interfaz WireGuard
      * 
      * @param wireguardInterface Interfaz de WireGuard
-     * @param publicKey          Clave pública del peer a eliminar
+     * @param peer        Información del peer a eliminar
      * @throws RuntimeException si hay un error al ejecutar el comando
      */
-    public void removePeer(String wireguardInterface, String publicKey) {
-        if (publicKey == null || publicKey.isEmpty()) {
+    public void removePeer(String wireguardInterface, WireGuardPeer peer) {
+        if (peer.getPublicKey() == null || peer.getPublicKey().isEmpty()) {
             throw new IllegalArgumentException("La clave pública del peer es requerida");
         }
 
@@ -66,22 +66,22 @@ public class WireGuardPeerService {
         command.add("set");
         command.add(wireguardInterface);
         command.add("peer");
-        command.add(publicKey);
+        command.add(peer.getPublicKey());
         command.add("remove");
 
         executeCommand(command);
-        logger.info("Peer eliminado exitosamente. Clave pública: {}", publicKey);
+        logger.info("Peer eliminado exitosamente. Clave pública: {}", peer.getPublicKey());
     }
 
     /**
      * Verifica si un peer existe en la interfaz WireGuard
      * 
      * @param wireguardInterface Interfaz de WireGuard
-     * @param publicKey          Clave pública del peer a verificar
+     * @param peer          Información del peer
      * @return true si el peer existe, false en caso contrario
      */
-    public boolean peerExists(String wireguardInterface, String publicKey) {
-        if (publicKey == null || publicKey.isEmpty()) {
+    public boolean peerExists(String wireguardInterface, WireGuardPeer peer) {
+        if (peer.getPublicKey() == null || peer.getPublicKey().isEmpty()) {
             return false;
         }
 
@@ -101,7 +101,7 @@ public class WireGuardPeerService {
                     new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    if (line.trim().equals(publicKey)) {
+                    if (line.trim().equals(peer.getPublicKey())) {
                         process.waitFor();
                         return true;
                     }

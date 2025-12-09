@@ -21,9 +21,9 @@ public interface WireGuardAgentClient {
     @PostMapping("/{wg}/peer/add")
     ResponseEntity<WireGuardPeerResponse> addPeer(@PathVariable String wg, @RequestBody WireGuardPeer peer);
 
-    @DeleteMapping("/{wg}/peer/remove/{publicKey}")
-    public ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg, @PathVariable String publicKey);
+    @DeleteMapping("/{wg}/peer/remove")
+    ResponseEntity<WireGuardPeerResponse> removePeer(@PathVariable String wg, @RequestBody WireGuardPeer peer);
 
-    @GetMapping("/{wg}/peer/exists/{publicKey}")
-    public ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @PathVariable String publicKey);
+    @GetMapping("/{wg}/peer/exists")
+    ResponseEntity<WireGuardPeerResponse> peerExists(@PathVariable String wg, @RequestBody WireGuardPeer peer);
 }

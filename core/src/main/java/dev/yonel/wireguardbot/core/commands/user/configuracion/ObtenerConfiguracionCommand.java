@@ -11,7 +11,7 @@ import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
 import dev.yonel.wireguardbot.common.services.database.UserService;
 import dev.yonel.wireguardbot.common.utils.HTMLMessageBuilder;
-import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.BuildConfig;
+import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.ConfiguracionCommandUtils;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.UserCommandInterface;
@@ -28,6 +28,8 @@ public class ObtenerConfiguracionCommand extends CommandBase implements UserComm
     private UserService userService;
     @Autowired
     private WireguardServerProperties wireguardServerProperties;
+    @Autowired
+    private ConfiguracionCommandUtils configuracionCommandUtils;
 
     @Override
     public List<ResponseBody> execute(MessageBody messageBody, UserSessionContext context) throws Throwable {
@@ -45,7 +47,7 @@ public class ObtenerConfiguracionCommand extends CommandBase implements UserComm
 
         if(user.getPeers().isEmpty()){
             createNewResponse(messageBody,
-                    "❌ No tienes configuraciones creadas por favor crea "
+                    "❌ No tienes configuraciones creadas, puedes crear "
                             + "una mediante el comando /crear_configuracion.");
             getCurrentResponse().setRemovable(true);
             return getResponses();
@@ -55,7 +57,7 @@ public class ObtenerConfiguracionCommand extends CommandBase implements UserComm
             createNewResponse(messageBody);
             buildResponsePeer(getCurrentResponse(), peerDto);
             createNewResponse(messageBody);
-            getCurrentResponse().setFile(BuildConfig.buildConfig(
+            getCurrentResponse().setFile(configuracionCommandUtils.buildConfig(
                     wireguardServerProperties,
                     user,
                     peerDto));
@@ -75,10 +77,10 @@ public class ObtenerConfiguracionCommand extends CommandBase implements UserComm
 
     private void buildResponsePeer(ResponseBody responseBody, PeerDto peerDto){
         HTMLMessageBuilder htmlBuilder = new HTMLMessageBuilder();
-        htmlBuilder.addBold("Peer creado: ");
-        htmlBuilder.addLine(peerDto.getCreatedAt().toString());
+        htmlBuilder.addBold("Creado: ");
+        htmlBuilder.addItalicLine(peerDto.getCreatedAt().toString());
         htmlBuilder.addBold("Vence: ");
-        htmlBuilder.addLine(peerDto.getPaidUpTo().toString());
+        htmlBuilder.addItalicLine(peerDto.getPaidUpTo().toString());
         responseBody.setResponse(htmlBuilder.build());
         responseBody.setParseMode(TypeParseMode.HTML);
     }

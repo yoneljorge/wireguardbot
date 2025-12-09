@@ -3,13 +3,22 @@ package dev.yonel.wireguardbot.core.commands.user.configuracion.utils;
 import dev.yonel.wireguardbot.common.dtos.PeerDto;
 import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class BuildConfig {
-    public static File buildConfig(
+
+@Component
+public class ConfiguracionCommandUtils {
+
+    @Autowired
+    private DiscoveryClient discoveryClient;
+
+    public File buildConfig(
             WireguardServerProperties properties,
             UserDto user,
             PeerDto peer) throws IOException {
@@ -36,5 +45,15 @@ public class BuildConfig {
         }
 
         return configFile;
+    }
+
+    /**
+     * Verifica que exista una instancia de Agent.
+     *
+     * @return <code>true</code> en caso de que exista una.
+     */
+    public boolean isNotActiveAgent() {
+        final String agentServiceName = "wireguardbot-agent";
+        return !(discoveryClient != null && !discoveryClient.getInstances(agentServiceName).isEmpty());
     }
 }
