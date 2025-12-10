@@ -1,14 +1,17 @@
 name: Deploy Agent Service
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
     paths:
-      - 'agent/**'
+      - 'core/**'
+      - 'bot/**'
+      - 'message-manager/**'
       - 'common/**'
       - 'pom.xml'
-      - '.github/workflows/deploy-agent.yml'
+      - '.github/workflows/deploy-core.yml'
 
 jobs:
   build-and-deploy:
@@ -31,26 +34,26 @@ jobs:
         run: mvn -B clean package -DskipTests
 
       # 4. Subir JAR al VPS vía SSH/SCP
-      - name: Copy agent JAR to VPS
+      - name: Copy core JAR to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          source: "agent/target/*.jar"
-          target: "/home/admin/agent/"
+          source: "core/target/*.jar"
+          target: "/home/admin/core"
           strip_components: 2
 
       # 5. Reiniciar servicio systemd
-      - name: Restart Agent Service
+      - name: Restart Core Service
         uses: appleboy/ssh-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            sudo mv /home/admin/agent/*.jar /opt/wireguardbot-agent/agent.jar
-            sudo chmod +x /opt/wireguardbot-agent/agent.jar
+            sudo mv /home/admin/core/*.jar /opt/wireguardbot-core/core.jar
+            sudo chmod +x /opt/wireguardbot-core/core.jar
             sudo systemctl daemon-reload
-            sudo systemctl restart wireguardbot-agent
-            sudo systemctl status wireguardbot-agent --no-pager
+            sudo systemctl restart wireguardbot-core
+            sudo systemctl status wireguardbot-core --no-pager
