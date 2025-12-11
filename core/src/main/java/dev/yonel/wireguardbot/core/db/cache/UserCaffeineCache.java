@@ -44,8 +44,12 @@ public class UserCaffeineCache extends CaffeineCacheBase {
     }
 
     public void delete(UserEntity entity){
+        invalidateCache(entity);
+        userRepository.delete(entity);
+    }
+
+    public void invalidateCache(UserEntity entity){
         cacheById.invalidate(entity.getId());
         cacheByUserId.invalidate(entity.getUserId());
-        userRepository.delete(entity);
     }
 }

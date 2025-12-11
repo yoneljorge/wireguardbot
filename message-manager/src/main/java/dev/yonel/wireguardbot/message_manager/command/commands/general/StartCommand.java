@@ -19,7 +19,7 @@ import dev.yonel.wireguardbot.common.enums.TypeParseMode;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotClientEvent;
 import dev.yonel.wireguardbot.common.events.SendToStartCommandEvent;
-import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.GeneralCommandInterface;
 import dev.yonel.wireguardbot.message_manager.messages.BienvenidaMessage;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StartCommand extends CommandBase implements GeneralCommandInterface {
 
     @Autowired
-    private UserService usuarioService;
+    private UserDatabaseService usuarioService;
 
     @Autowired
     private ApplicationEventPublisher publisher;

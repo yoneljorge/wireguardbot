@@ -4,12 +4,12 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import dev.yonel.wireguardbot.common.services.database.IpService;
+import dev.yonel.wireguardbot.common.services.database.IpDatabaseService;
 import dev.yonel.wireguardbot.core.db.entities.IpEntity;
 import dev.yonel.wireguardbot.core.db.repositories.IpRepository;
 
 @Service
-public class IpServiceImpl implements IpService{
+public class IpServiceImpl implements IpDatabaseService {
 
     private final IpRepository ipRepository;
     private final String BASE_IP_SUBNET_PREFIX = "10.0.0."; // Prefijo de la IP

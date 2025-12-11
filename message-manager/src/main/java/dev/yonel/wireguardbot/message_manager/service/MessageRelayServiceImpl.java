@@ -17,7 +17,7 @@ import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeSendExecution;
 import dev.yonel.wireguardbot.common.enums.TypeWebhookTelegramBot;
 import dev.yonel.wireguardbot.common.events.DeleteMessageEvent;
-import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.common.services.message_manager.MessageRelayService;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.command.registry.GeneralCommandRegistry;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MessageRelayServiceImpl implements MessageRelayService {
 
     @Autowired
-    private UserService usuarioService;
+    private UserDatabaseService usuarioService;
     @Autowired
     private CommandDetector commandDetector;
     @Autowired

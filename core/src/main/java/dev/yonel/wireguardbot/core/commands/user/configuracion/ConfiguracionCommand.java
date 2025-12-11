@@ -89,6 +89,7 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
 
                 case OPCION_OBTENER -> {
                     addResponses(commandFactory.getCommand(ObtenerConfiguracionCommand.NAME).execute(messageBody, context));
+                    context.getBotSession(messageBody.getTypeBot()).reset();
                     break;
                 }
 
@@ -136,7 +137,7 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                         .build(),
                 Button.builder()
                         .callbackData(OPCION_OBTENER)
-                        .text("📄 Obtener Configuración")
+                        .text("📄 Obtener mi Configuración")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()

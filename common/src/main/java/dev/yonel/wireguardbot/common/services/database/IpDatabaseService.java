@@ -1,6 +1,6 @@
 package dev.yonel.wireguardbot.common.services.database;
 
-public interface IpService {
+public interface IpDatabaseService {
 
     String getNewIp();
 }

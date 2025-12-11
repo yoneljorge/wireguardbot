@@ -13,8 +13,8 @@ import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardKeyPair;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeerResponse;
 import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotClientEvent;
-import dev.yonel.wireguardbot.common.services.database.IpService;
-import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.common.services.database.IpDatabaseService;
+import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.core.client.WireGuardAgentClient;
 import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.ConfiguracionCommandUtils;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
@@ -38,9 +38,9 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
 
 
     @Autowired
-    private UserService userService;
+    private UserDatabaseService userService;
     @Autowired
-    private IpService ipService;
+    private IpDatabaseService ipService;
     @Autowired
     private WireGuardAgentClient agentClient;
     @Autowired

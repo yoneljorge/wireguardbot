@@ -6,7 +6,7 @@ import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.exceptions.DuplicateUserException;
 import dev.yonel.wireguardbot.common.exceptions.NotExistsException;
 
-public interface UserService {
+public interface UserDatabaseService {
 
     Optional<UserDto> createUser(UserDto user) throws DuplicateUserException,IllegalArgumentException, InternalError;
 
@@ -19,4 +19,6 @@ public interface UserService {
     void deleteUser(UserDto user);
 
     boolean userExistsByUserId(Long userId);
+
+    void invalidateCache(UserDto userDto);
 }

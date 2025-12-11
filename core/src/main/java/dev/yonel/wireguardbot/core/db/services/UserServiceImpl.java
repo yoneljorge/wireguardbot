@@ -12,7 +12,7 @@ import dev.yonel.wireguardbot.common.dtos.PeerDto;
 import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.exceptions.DuplicateUserException;
 import dev.yonel.wireguardbot.common.exceptions.NotExistsException;
-import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.core.db.cache.UserCaffeineCache;
 import dev.yonel.wireguardbot.core.db.entities.IpEntity;
 import dev.yonel.wireguardbot.core.db.entities.PeerEntity;
@@ -29,7 +29,7 @@ import dev.yonel.wireguardbot.core.db.entities.UserEntity;
  *          módulo db.
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserDatabaseService {
 
     private final UserCaffeineCache userCaffeineCache;
 
@@ -180,5 +180,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean userExistsByUserId(Long userId) {
         return userCaffeineCache.findByUserId(userId) != null;
+    }
+
+    @Override
+    public void invalidateCache(UserDto userDto) {
+        userCaffeineCache.invalidateCache(convertToEntity(userDto));
     }
 }

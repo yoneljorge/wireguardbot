@@ -13,14 +13,14 @@ import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeerResponse;
 import dev.yonel.wireguardbot.common.enums.TypeCustomButton;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
-import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.common.services.database.PeerDatabaseService;
+import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.common.utils.HTMLMessageBuilder;
 import dev.yonel.wireguardbot.core.client.WireGuardAgentClient;
 import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.ConfiguracionCommandUtils;
 import dev.yonel.wireguardbot.core.db.repositories.PeerRepository;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
-import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.UserCommandInterface;
 import dev.yonel.wireguardbot.message_manager.messages.ErrorMessage;
 import dev.yonel.wireguardbot.message_manager.messages.NoEntendiMessages;
@@ -38,9 +38,9 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
     @Autowired
     private ConfiguracionCommandUtils configuracionCommandUtils;
     @Autowired
-    private UserService userService;
+    private UserDatabaseService userService;
     @Autowired
-    private PeerRepository peerRepository;
+    private PeerDatabaseService peerDatabaseService;
     @Autowired
     private WireGuardAgentClient agentClient;
     @Autowired
@@ -176,7 +176,7 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
                     log.warn("Error accediendo al microservicio Agent -> Puede estar caído.");
                     return getResponses();
                 }
-                peerRepository.deleteById(idPeer);
+                peerDatabaseService.deletePeer(idPeer, user);
 
             }catch (IllegalFormatException e){
                 log.error("Error al parsear un String a Long: {}", e.getMessage());

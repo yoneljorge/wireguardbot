@@ -9,7 +9,7 @@ import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
-import dev.yonel.wireguardbot.common.services.database.UserService;
+import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.common.utils.HTMLMessageBuilder;
 import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.ConfiguracionCommandUtils;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
@@ -25,7 +25,7 @@ public class ObtenerConfiguracionCommand extends CommandBase implements UserComm
     public static final String[] ALIASES = {"/obtener_configuracion", "obtener configuracion", "obtener perfil"};
 
     @Autowired
-    private UserService userService;
+    private UserDatabaseService userService;
     @Autowired
     private WireguardServerProperties wireguardServerProperties;
     @Autowired
