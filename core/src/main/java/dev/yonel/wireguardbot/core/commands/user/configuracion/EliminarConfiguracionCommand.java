@@ -110,6 +110,13 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
                     "❌ No tienes configuraciones creadas, puedes crear "
                             + "una mediante el comando /crear_configuracion.");
             getCurrentResponse().setRemovable(true);
+            getCurrentResponse().setButtons(List.of(
+                    Button.builder()
+                            .text("Menu Configuración")
+                            .callbackData("/menu_configuracion")
+                            .typeButton(TypeCustomButton.CALLBACKDATA)
+                            .build()
+            ));
 
             context.getBotSession(messageBody.getTypeBot()).reset();
             return getResponses();
