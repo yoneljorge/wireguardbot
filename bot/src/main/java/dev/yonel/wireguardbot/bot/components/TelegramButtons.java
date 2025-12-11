@@ -31,14 +31,17 @@ public class TelegramButtons {
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
         List<InlineKeyboardButton> row = new ArrayList<>();
         int contador = 0;
+        int rows;
+        if(responseBody.getRows() != 0){
+            rows = responseBody.getRows();
+        }else {
+            rows = 3;
+        }
+
 
         for (Button button : responseBody.getButtons()) {
 
             InlineKeyboardButton inlineKeyboardButton = new InlineKeyboardButton();
-
-            /**
-             * En caso de que hallan más de tres botones se van acomodando en filas de 3.
-             */
 
             inlineKeyboardButton.setText(button.getText());
             if (button.getTypeButton() == TypeCustomButton.URL) {
@@ -48,13 +51,13 @@ public class TelegramButtons {
             }
             row.add(inlineKeyboardButton);
             contador++;
-            if (contador == 3) {
+            if (contador == rows) {
                 keyboard.add(row);
                 row = new ArrayList<>();
                 contador = 0;
             }
         }
-        if (contador != 0 && contador < 3) {
+        if (contador != 0 && contador < rows) {
             keyboard.add(row);
         }
         markup.setKeyboard(keyboard);
@@ -72,6 +75,12 @@ public class TelegramButtons {
         List<KeyboardRow> keyboard = new ArrayList<>();
         KeyboardRow currentRow = new KeyboardRow();
         int contador = 0;
+        int rows;
+        if(responseBody.getRows() != 0){
+            rows = responseBody.getRows();
+        }else {
+            rows = 3;
+        }
 
         for(Button button : responseBody.getButtons()){
             KeyboardButton keyboardButton = new KeyboardButton(button.getText());
@@ -79,8 +88,8 @@ public class TelegramButtons {
             currentRow.add(keyboardButton);
             contador ++;
 
-            // Organizar en filas de 3 botones
-            if(contador == 3){
+            // Organizar en filas en dependencia de la cantidad de rows
+            if(contador == rows){
                 keyboard.add(currentRow);
                 currentRow = new KeyboardRow();
                 contador = 0;

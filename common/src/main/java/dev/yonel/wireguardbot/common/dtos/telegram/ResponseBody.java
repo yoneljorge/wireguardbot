@@ -31,6 +31,8 @@ public class ResponseBody {
 
     private List<Button> buttons;
     private TypeCustomKeyboardMarkup typeKeyboard;
+    @Builder.Default
+    private int rows = 0;
 
     private String fileDocument;
     @Builder.Default

@@ -152,6 +152,7 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                         .build());
         getCurrentResponse().setButtons(buttons);
         getCurrentResponse().setRemovable(true);
+        getCurrentResponse().setRows(1);
     }
 
     private String option(String text) {

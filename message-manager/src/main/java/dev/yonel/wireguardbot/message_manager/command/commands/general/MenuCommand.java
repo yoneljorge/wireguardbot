@@ -30,6 +30,7 @@ public class MenuCommand extends CommandBase implements GeneralCommandInterface 
         getCurrentResponse().setParseMode(TypeParseMode.HTML);
         getCurrentResponse().setButtons(buildMenuButtons());
         getCurrentResponse().setRemovable(true);
+        getCurrentResponse().setRows(1);
         return getResponses();
     }
 
