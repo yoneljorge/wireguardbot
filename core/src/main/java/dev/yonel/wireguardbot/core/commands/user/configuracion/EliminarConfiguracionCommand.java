@@ -110,6 +110,8 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
                     "❌ No tienes configuraciones creadas, puedes crear "
                             + "una mediante el comando /crear_configuracion.");
             getCurrentResponse().setRemovable(true);
+
+            context.getBotSession(messageBody.getTypeBot()).reset();
             return getResponses();
         }
 
@@ -200,9 +202,7 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
         Cuando se presione el botón terminar entonces se termina la espera.
          */
         if(messageBody.getMessage().equalsIgnoreCase("terminar")){
-            context.getBotSession(messageBody.getTypeBot()).removeLastActiveFlow();
-            context.getBotSession(messageBody.getTypeBot()).cleanData();
-            context.getBotSession(messageBody.getTypeBot()).resetStep();
+            context.getBotSession(messageBody.getTypeBot()).reset();
 
             // Revisamos si se ha eliminado con éxito los peers seleccionados
             createNewResponse(messageBody,
@@ -213,9 +213,7 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
         En caso de que no se espere al botón terminar, entonces se termina la espera y se cierra el contexto.
          */
         if(! (boolean) context.getBotSession(messageBody.getTypeBot()).getData(SessionKey.ELIMINAR_CONFIGURACION_COMMAND_ESPERAR)){
-            context.getBotSession(messageBody.getTypeBot()).cleanData();
-            context.getBotSession(messageBody.getTypeBot()).removeLastActiveFlow();
-            context.getBotSession(messageBody.getTypeBot()).resetStep();
+            context.getBotSession(messageBody.getTypeBot()).reset();
 
             createNewResponse(messageBody,
                     "Se ha terminado de eliminar la configuración.");
