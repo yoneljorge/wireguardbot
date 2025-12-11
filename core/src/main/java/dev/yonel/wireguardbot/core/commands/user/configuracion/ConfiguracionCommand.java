@@ -132,12 +132,12 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
         List<Button> buttons = List.of(
                 Button.builder()
                         .callbackData(OPCION_CREAR)
-                        .text("✨ Crear Configuración")
+                        .text("✨ Crear")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
                         .callbackData(OPCION_OBTENER)
-                        .text("📄 Obtener mi Configuración")
+                        .text("📄 Obtener")
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()

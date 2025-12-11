@@ -4,6 +4,8 @@ package dev.yonel.wireguardbot.message_manager.command.commands.general;
 import java.util.List;
 import java.util.Optional;
 
+import dev.yonel.wireguardbot.common.dtos.telegram.Button;
+import dev.yonel.wireguardbot.common.enums.TypeCustomButton;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
@@ -234,5 +236,12 @@ public class StartCommand extends CommandBase implements GeneralCommandInterface
     private void mensajeBienvenidaPrivado(MessageBody messageBody, String username) {
         createNewResponse(messageBody, BienvenidaMessage.message(username));
         getCurrentResponse().setParseMode(TypeParseMode.HTML);
+        getCurrentResponse().setButtons(List.of(
+                Button.builder()
+                        .text("Crear Configuración")
+                        .callbackData("/crear_configuracion")
+                        .typeButton(TypeCustomButton.CALLBACKDATA)
+                        .build()
+        ));
     }
 }
