@@ -1,6 +1,7 @@
 package dev.yonel.wireguardbot.common.dtos;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
@@ -27,6 +28,11 @@ public class UserDto {
 	private LocalDate activedFreePlan;
     private LocalDate subscriptionPayTo;
 	private boolean freePlanEnded;
+
+    @Builder.Default
+    private boolean active = true;
+    private LocalDateTime deletedAt;
+    private Boolean deleted;
 
 	public UserDto(MessageBody body) {
 
@@ -61,4 +67,12 @@ public class UserDto {
 	public void setPeer(PeerDto peer) {
 		this.peers.add(peer);
 	}
+
+    public boolean isActive() {
+        return active && !Boolean.TRUE.equals(deleted);
+    }
+
+    public boolean isDeleted() {
+        return Boolean.TRUE.equals(deleted);
+    }
 }

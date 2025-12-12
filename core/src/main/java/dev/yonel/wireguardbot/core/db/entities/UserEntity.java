@@ -1,6 +1,7 @@
 package dev.yonel.wireguardbot.core.db.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import dev.yonel.wireguardbot.common.enums.TypeRol;
@@ -52,7 +53,33 @@ public class UserEntity {
     private List<PeerEntity> peers;
     
     private TypeRol typeRol;
+    @Column(name = "active_free_plan")
     private LocalDate activedFreePlan;
+    @Column(name = "subscription_pay_to")
     private LocalDate subscriptionPayTo;
+    @Column(name = "free_plan_ended")
     private Boolean freePlanEnded;
+
+    @Builder.Default
+    private Boolean active = true;
+    @Column(name = "delete_at")
+    private LocalDateTime deletedAt;
+    @Builder.Default
+    private Boolean deleted = false;
+
+    public void deactivate(){
+        this.active = false;
+        this.deleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
+
+    public void reactivate(){
+        this.active = true;
+        this.deleted = false;
+        this.deletedAt = null;
+    }
+
+    public boolean isActive(){
+        return Boolean.TRUE.equals(active) && !Boolean.TRUE.equals(deleted);
+    }
 }
