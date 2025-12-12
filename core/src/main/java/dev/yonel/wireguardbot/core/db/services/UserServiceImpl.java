@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserDatabaseService {
                 .typeRol(user.getTypeRol())
                 .activedFreePlan(user.getActivedFreePlan())
                 .freePlanEnded(user.isFreePlanEnded())
+                .subscriptionPayTo(user.getSubscriptionPayTo())
                 .peers(convertPeersToEntitis(user))
                 .build();
     }
@@ -120,6 +121,7 @@ public class UserServiceImpl implements UserDatabaseService {
                 .typeRol(user.getTypeRol())
                 .activedFreePlan(user.getActivedFreePlan())
                 .freePlanEnded(user.getFreePlanEnded())
+                .subscriptionPayTo(user.getSubscriptionPayTo())
                 .peers(convertPeersToDto(user))
                 .build();
     }

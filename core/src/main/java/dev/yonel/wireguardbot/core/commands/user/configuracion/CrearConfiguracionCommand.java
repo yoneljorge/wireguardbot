@@ -19,6 +19,7 @@ import dev.yonel.wireguardbot.core.client.WireGuardAgentClient;
 import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.ConfiguracionCommandUtils;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.UserCommandInterface;
+import dev.yonel.wireguardbot.message_manager.messages.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -72,113 +73,15 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
             }
 
             UserDto user = userOptional.get();
-            PeerDto peerDto = new PeerDto();
-
             if (user.getPeers().isEmpty()) {
                 if (!user.isFreePlanEnded()) {
                     /*
                      * Si el usuario no ha utilizado el plan Free entonces se le permite utilizarlo
                      * y se activa la fecha.
                      */
-                    notificarUsuario(user, "⏳ Creando configuración...", true);
-
-                    user.setActivedFreePlan(LocalDate.now());
-                    peerDto.setActive(true);
-
-                    /*
-                     * Obtenemos una nueva direccion ip.
-                     */
-                    String newIpAddress = ipService.getNewIp();
-                    if (newIpAddress == null) {
-                        createNewResponse(messageBody,
-                                "❌ No se pudo asignar una dirección IP. Por favor, contacta con el soporte.");
-                        getCurrentResponse().setRemovable(true);
-                        return getResponses();
-                    }
-
-                    /*
-                     * Obtenemos el par de claves.
-                     */
-                    WireGuardKeyPair keyPair = agentClient.generateKeyPair().getBody();
-                    if (keyPair == null) {
-                        createNewResponse(messageBody,
-                                "❌ No se pudieron generar las claves de seguridad. Por favor, intenta más tarde.");
-                        getCurrentResponse().setRemovable(true);
-                        return getResponses();
-                    }
-
-                    /*
-                     * Terminamos de crear el peer del usuario y le enviamos la configuración.
-                     */
-                    peerDto.setPrivateKey(keyPair.getPrivateKey());
-                    peerDto.setPublicKey(keyPair.getPublicKey());
-                    peerDto.setCreatedAt(LocalDate.now());
-                    IpDto ip = new IpDto();
-                    ip.setIpString(newIpAddress);
-                    peerDto.setIpDto(ip);
-                    /*
-                     * Como el plan Free es de 7 días se pone la fecha
-                     * de vencimiento a los 7 días.
-                     */
-                    peerDto.setPaidUpTo(LocalDate.now().plusDays(7));
-                    user.setPeer(peerDto);
-
-                    /*
-                     * Actualizamos el usuario en la base de datos con la nueva información.
-                     */
-                    Optional<UserDto> updateUser = userService.updateUser(user);
-                    /*
-                     * Si el usuario se actualizó correctamente entonces procedemos a generar el
-                     * archivo de configuración.
-                     */
-                    if (updateUser != null && updateUser.isPresent()) {
-                        try {
-                            File configFile = configuracionCommandUtils.buildConfig(wireguardServerProperties, user, peerDto);
-
-                            /*
-                             * Creamos el nuevo peer que se va a agregar al servidor WireGuard.
-                             */
-                            WireGuardPeer newPeer = WireGuardPeer.builder()
-                                    .publicKey(keyPair.getPublicKey())
-                                    .allowedIp(newIpAddress)
-                                    .build();
-
-                            /*
-                             * Agregamos el nuevo peer al servidor y esperamos la respuesta.
-                             */
-                            WireGuardPeerResponse peerResponse = agentClient
-                                    .addPeer(wireguardServerProperties.getName(), newPeer).getBody();
-
-                            if (peerResponse == null || !peerResponse.isSuccess()) {
-                                createNewResponse(messageBody,
-                                        "❌ No se pudo agregar la configuración al servidor. Por favor, intenta más tarde." );
-                                getCurrentResponse().setRemovable(true);
-                                return getResponses();
-                            }
-
-                            // Crear mensaje con texto
-                            createNewResponse(messageBody,
-                                    "✅ ¡Configuración creada exitosamente!\n"
-                                            +"\n📁 Aquí tienes tu archivo de configuración de WireGuard.\n"
-                                            +"\n⏰ Tu plan gratuito expira el: " + peerDto.getPaidUpTo());
-                            createNewResponse(messageBody);
-                            getCurrentResponse().setFile(configFile);
-                            return getResponses();
-
-                        } catch (IOException e) {
-                            log.error("Error generando archivo de configuración para usuario {}: {}", messageBody.getUserid(), e.getMessage());
-
-                            createNewResponse(messageBody,
-                                    "❌ Error al generar el archivo de configuración. Por favor, contacta con el soporte.");
-                            // FIXME: aquí hay que notificar a los administradores del problema.
-                            return getResponses();
-                        }
-                    } else {
-                        createNewResponse(messageBody,
-                                "❌ No se pudo actualizar tu información. Por favor, intenta más tarde.");
-
-                        return getResponses();
-                    }
+                    return creteConfig(messageBody, user, true);
+                }else if(isActiveSubscription(user.getSubscriptionPayTo())){
+                    return creteConfig(messageBody, user, false);
                 } else {
                     /*
                      * Si el usuario ya utilizó su plan Free entonces tiene que pagar.
@@ -191,7 +94,6 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
                     return getResponses();
                 }
             } else {
-                peerDto.setActive(false);
                 createNewResponse(messageBody,
                         "💳 Ya tienes una configuración activa. Para crear una nueva, necesitas renovar tu suscripción.");
                 getCurrentResponse().setRemovable(true);
@@ -199,7 +101,10 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
             }
         }catch (Exception e){
             e.printStackTrace();
-            return null;
+            context.getBotSession(messageBody.getTypeBot()).reset();
+            createNewResponse(messageBody,
+                    ErrorMessage.getMessage());
+            return getResponses();
         }
 
     }
@@ -214,7 +119,6 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
         return new String[]{"/crear_configuracion", "crear configuracion", "crear perfil"};
     }
 
-
     private void notificarUsuario(UserDto user, String message, boolean removable) {
         /*
          * Enviamos una notificacion mediante el ClientBot para que el usuario.
@@ -227,4 +131,145 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
                         .build())));
     }
 
+    /**
+     * Compara la fecha actual con la de la suscripción.
+     * @param subscriptionPayTo la fecha donde termina la suscripcion.
+     * @return <code>true</code> si no ha vencido la suscripción,
+     * <code>false</code> si venció la suscripción.
+     */
+    private boolean isActiveSubscription(LocalDate subscriptionPayTo){
+        if(subscriptionPayTo == null){
+            return false;
+        }
+        return  !LocalDate.now().isAfter(subscriptionPayTo);
+    }
+
+    /**
+     * Crea una nueva configuración en el servidor.
+     * @param messageBody el mensaje recibido.
+     * @param user el usuario.
+     * @param planFree <code>true</code> para el plan free,
+     *                 <false></false> para el plan normal.
+     * @return <code>List<ResponseBody></code> con las respuestas.
+     */
+    private List<ResponseBody> creteConfig(MessageBody messageBody, UserDto user, boolean planFree){
+        PeerDto peerDto = new PeerDto();
+        notificarUsuario(user, "⏳ Creando configuración...", true);
+
+        if(planFree){
+            /*
+             * Se activa el FreePlan por 7 días
+             */
+            user.setActivedFreePlan(LocalDate.now());
+            peerDto.setActive(true);
+        }
+
+        /*
+         * Obtenemos una nueva dirección ip.
+         */
+        String newIpAddress = ipService.getNewIp();
+        if (newIpAddress == null) {
+            createNewResponse(messageBody,
+                    "❌ No se pudo asignar una dirección IP. Por favor, contacta con el soporte.");
+            getCurrentResponse().setRemovable(true);
+            return getResponses();
+        }
+
+        /*
+         * Obtenemos el par de claves.
+         */
+        WireGuardKeyPair keyPair = agentClient.generateKeyPair().getBody();
+        if (keyPair == null) {
+            createNewResponse(messageBody,
+                    "❌ No se pudieron generar las claves de seguridad. Por favor, intenta más tarde.");
+            getCurrentResponse().setRemovable(true);
+            return getResponses();
+        }
+
+        /*
+         * Terminamos de crear el peer del usuario y le enviamos la configuración.
+         */
+        peerDto.setPrivateKey(keyPair.getPrivateKey());
+        peerDto.setPublicKey(keyPair.getPublicKey());
+        peerDto.setCreatedAt(LocalDate.now());
+        IpDto ip = new IpDto();
+        ip.setIpString(newIpAddress);
+        peerDto.setIpDto(ip);
+        if(planFree){
+            /*
+             * Como el plan Free es de 7 días se pone la fecha
+             * de vencimiento a los 7 días.
+             */
+            peerDto.setPaidUpTo(LocalDate.now().plusDays(7));
+        } else{
+          peerDto.setPaidUpTo(user.getSubscriptionPayTo());
+        }
+        user.setPeer(peerDto);
+
+
+        /*
+         * Actualizamos el usuario en la base de datos con la nueva información.
+         */
+        Optional<UserDto> updateUser = userService.updateUser(user);
+        /*
+         * Si el usuario se actualizó correctamente entonces procedemos a generar el
+         * archivo de configuración.
+         */
+        if (updateUser != null && updateUser.isPresent()) {
+            try {
+                File configFile = configuracionCommandUtils.buildConfig(wireguardServerProperties, user, peerDto);
+
+                /*
+                 * Creamos el nuevo peer que se va a agregar al servidor WireGuard.
+                 */
+                WireGuardPeer newPeer = WireGuardPeer.builder()
+                        .publicKey(keyPair.getPublicKey())
+                        .allowedIp(newIpAddress)
+                        .build();
+
+                /*
+                 * Agregamos el nuevo peer al servidor y esperamos la respuesta.
+                 */
+                WireGuardPeerResponse peerResponse = agentClient
+                        .addPeer(wireguardServerProperties.getName(), newPeer).getBody();
+
+                if (peerResponse == null || !peerResponse.isSuccess()) {
+                    createNewResponse(messageBody,
+                            "❌ No se pudo agregar la configuración al servidor. Por favor, intenta más tarde." );
+                    getCurrentResponse().setRemovable(true);
+                    return getResponses();
+                }
+                // Crear mensaje con texto
+                if(planFree){
+                    createNewResponse(messageBody,
+                            "✅ ¡Configuración creada exitosamente!\n"
+                                    +"\n📁 Aquí tienes tu archivo de configuración de WireGuard.\n"
+                                    +"\n⏰ Tu plan gratuito expira el: " + peerDto.getPaidUpTo());
+                }else{
+                    createNewResponse(messageBody,
+                            "✅ ¡Configuración creada exitosamente!\n"
+                                    +"\n📁 Aquí tienes tu archivo de configuración de WireGuard.\n"
+                                    +"\n⏰ Tu plan expira el: " + peerDto.getPaidUpTo());
+                }
+
+
+                createNewResponse(messageBody);
+                getCurrentResponse().setFile(configFile);
+                return getResponses();
+
+            } catch (IOException e) {
+                log.error("Error generando archivo de configuración para usuario {}: {}", messageBody.getUserid(), e.getMessage());
+
+                createNewResponse(messageBody,
+                        "❌ Error al generar el archivo de configuración. Por favor, contacta con el soporte.");
+                // FIXME: aquí hay que notificar a los administradores del problema.
+                return getResponses();
+            }
+        } else {
+            createNewResponse(messageBody,
+                    "❌ No se pudo actualizar tu información. Por favor, intenta más tarde.");
+
+            return getResponses();
+        }
+    }
 }

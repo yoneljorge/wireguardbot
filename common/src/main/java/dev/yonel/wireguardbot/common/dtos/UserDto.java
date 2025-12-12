@@ -25,6 +25,7 @@ public class UserDto {
 	private List<PeerDto> peers;
 	private TypeRol typeRol;
 	private LocalDate activedFreePlan;
+    private LocalDate subscriptionPayTo;
 	private boolean freePlanEnded;
 
 	public UserDto(MessageBody body) {

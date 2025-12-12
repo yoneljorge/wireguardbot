@@ -53,5 +53,6 @@ public class UserEntity {
     
     private TypeRol typeRol;
     private LocalDate activedFreePlan;
+    private LocalDate subscriptionPayTo;
     private Boolean freePlanEnded;
 }
