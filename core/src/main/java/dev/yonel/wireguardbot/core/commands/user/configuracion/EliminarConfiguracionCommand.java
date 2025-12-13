@@ -21,6 +21,7 @@ import dev.yonel.wireguardbot.core.commands.user.configuracion.utils.Configuraci
 import dev.yonel.wireguardbot.core.db.repositories.PeerRepository;
 import dev.yonel.wireguardbot.core.properties.WireguardServerProperties;
 import dev.yonel.wireguardbot.message_manager.command.CommandBase;
+import dev.yonel.wireguardbot.message_manager.command.interfaces.Command;
 import dev.yonel.wireguardbot.message_manager.command.interfaces.UserCommandInterface;
 import dev.yonel.wireguardbot.message_manager.messages.ErrorMessage;
 import dev.yonel.wireguardbot.message_manager.messages.NoEntendiMessages;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class EliminarConfiguracionCommand extends CommandBase implements UserCommandInterface {
+public class EliminarConfiguracionCommand extends CommandBase implements Command {
 
     public static final String NAME = "/eliminar_configuracion";
     public static final String[] ALIASES = {"/eliminar_configuracion", "eliminar configuracion", "eliminar perfil"};
@@ -110,6 +111,13 @@ public class EliminarConfiguracionCommand extends CommandBase implements UserCom
                     "❌ No tienes configuraciones creadas, puedes crear "
                             + "una mediante el comando /crear_configuracion.");
             getCurrentResponse().setRemovable(true);
+            getCurrentResponse().setButtons(List.of(
+                    Button.builder()
+                            .text("Menu Configuración")
+                            .callbackData("/menu_configuracion")
+                            .typeButton(TypeCustomButton.CALLBACKDATA)
+                            .build()
+            ));
 
             context.getBotSession(messageBody.getTypeBot()).reset();
             return getResponses();

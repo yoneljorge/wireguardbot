@@ -15,7 +15,7 @@ public class BienvenidaMessage {
                 - <i>Requisito:</i> Para usar esta función, descarga el cliente TunnlTo. El enlace lo encuentras en nuestra comunidad: <a href="https://t.me/wireguardbot_devYonel">https://t.me/wireguardbot_devYonel</a>
 
                 💰 <b>Precios, Prueba y Ganancias:</b>
-                - 🎁 <b>PRUEBA GRATIS:</b> Tienes 3 días para probar nuestro servicio sin compromiso. ¡Solo tienes que crear tu configuración!
+                - 🎁 <b>PRUEBA GRATIS:</b> Tienes 7 días para probar nuestro servicio sin compromiso. ¡Solo tienes que crear tu configuración!
                 - 💵 <b>Suscripción Mensual:</b> Solo 100 CUP.
                 - 🤝 <b>Gana con Referidos:</b> Atrae nuevos clientes y <i>disminuye considerablemente</i> el precio de tu suscripción. ¡Si tus ganancias sobrepasan el costo mensual, puedes <i>retirar</i> el excedente!
 

@@ -28,11 +28,13 @@ public class UserCaffeineCache extends CaffeineCacheBase {
     private UserRepository userRepository;
 
     public UserEntity findById(Long id){
-        return cacheById.get(id, key -> userRepository.findById(id).orElse(null));
+        return cacheById.get(id, key -> userRepository
+                .findByIdAndActiveTrue(id).orElse(null));
     }
 
     public UserEntity findByUserId(Long userId){
-        return cacheByUserId.get(userId, key -> userRepository.findByUserId(userId).orElse(null));
+        return cacheByUserId.get(userId, key -> userRepository
+                .findByUserIdAndActiveTrue(userId).orElse(null));
     }
 
     public UserEntity save(UserEntity entity){
@@ -43,9 +45,24 @@ public class UserCaffeineCache extends CaffeineCacheBase {
         return saved;
     }
 
-    public void delete(UserEntity entity){
-        invalidateCache(entity);
-        userRepository.delete(entity);
+    public void deactivate(UserEntity entity){
+        if(entity != null && entity.getId() != null){
+            entity.deactivate();
+            UserEntity deactivated = userRepository.saveAndFlush(entity);
+            invalidateCache(deactivated);
+        }
+    }
+
+    public UserEntity reactivate(Long userId){
+        UserEntity entity = userRepository.findByUserId(userId).orElse(null);
+        if(entity != null){
+            entity.reactivate();
+            UserEntity reactivated = userRepository.saveAndFlush(entity);
+            cacheById.put(reactivated.getId(), reactivated);
+            cacheByUserId.put(reactivated.getId(), reactivated);
+            return reactivated;
+        }
+        return null;
     }
 
     public void invalidateCache(UserEntity entity){

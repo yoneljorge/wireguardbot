@@ -1,8 +1,12 @@
 package dev.yonel.wireguardbot.core.db.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,4 +32,20 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
      */
     @Transactional(readOnly = true)
     boolean existsByUserId(Long userId);
+
+    Optional<UserEntity> findByIdAndActiveTrue(Long id);
+
+    Optional<UserEntity> findByUserIdAndActiveTrue(Long userId);
+
+    List<UserEntity> findAllByActiveTrue();
+
+    @Modifying
+    @Query("UPDATE UserEntity u SET u.active = false, u.deleted = true, u.deletedAt = CURRENT_TIMESTAMP WHERE u.id = :id")
+    int softDeleteById(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE UserEntity u SET u.active = true, u.deleted = false, u.deletedAt = null WHERE u.user_id = :userid")
+    int reactivateByUserId(@Param("userid") Long userId);
+
+    long countByActiveTrue();
 }

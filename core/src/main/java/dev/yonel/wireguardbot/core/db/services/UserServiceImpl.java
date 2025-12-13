@@ -40,6 +40,7 @@ public class UserServiceImpl implements UserDatabaseService {
     @Override
     public Optional<UserDto> createUser(UserDto user) throws DuplicateUserException, InternalError {
         try {
+            user.setActive(true); // Asegurar de que el nuevo usuario ese activo.
             UserEntity newEntity = userCaffeineCache.save(convertToEntity(user));
             return Optional.ofNullable(convertToDto(newEntity));
         } catch (DataIntegrityViolationException e) {
@@ -79,12 +80,13 @@ public class UserServiceImpl implements UserDatabaseService {
             throw new IllegalArgumentException("User is null.");
         }
         try {
-            if (userCaffeineCache.findById(user.getId()) != null) {
-                UserEntity entity = userCaffeineCache.save(convertToEntity(user));
-                return Optional.ofNullable(convertToDto(entity));
-            } else {
+            UserEntity existing = userCaffeineCache.findById(user.getId());
+            if (existing == null) {
                 throw new NotExistsException("No existe el usuario que se desea actualizar.");
             }
+            user.setActive(existing.isActive()); // Preservar el estado activo
+            UserEntity entity = userCaffeineCache.save(convertToEntity(user));
+            return Optional.ofNullable(convertToDto(entity));
         } catch (Exception e) {
             e.printStackTrace();
             return Optional.empty();
@@ -93,9 +95,21 @@ public class UserServiceImpl implements UserDatabaseService {
 
     @Override
     public void deleteUser(UserDto user) {
-        userCaffeineCache.delete(convertToEntity(user));
+        userCaffeineCache.deactivate(convertToEntity(user));
     }
 
+    public Optional<UserDto> reactivateUser(Long userId){
+        UserEntity reactivated = userCaffeineCache.reactivate(userId);
+        if(reactivated != null){
+            return Optional.ofNullable(convertToDto(reactivated));
+        }
+        return Optional.empty();
+    }
+
+    public boolean isUserActive(Long userId){
+        UserEntity entity = userCaffeineCache.findByUserId(userId);
+        return entity != null && entity.isActive();
+    }
     private UserEntity convertToEntity(UserDto user) {
         return UserEntity.builder()
                 .id(user.getId())
@@ -106,6 +120,10 @@ public class UserServiceImpl implements UserDatabaseService {
                 .typeRol(user.getTypeRol())
                 .activedFreePlan(user.getActivedFreePlan())
                 .freePlanEnded(user.isFreePlanEnded())
+                .subscriptionPayTo(user.getSubscriptionPayTo())
+                .active(user.isActive())
+                .deleted(user.isDeleted())
+                .deletedAt(user.getDeletedAt())
                 .peers(convertPeersToEntitis(user))
                 .build();
     }
@@ -120,6 +138,10 @@ public class UserServiceImpl implements UserDatabaseService {
                 .typeRol(user.getTypeRol())
                 .activedFreePlan(user.getActivedFreePlan())
                 .freePlanEnded(user.getFreePlanEnded())
+                .subscriptionPayTo(user.getSubscriptionPayTo())
+                .active(user.isActive())
+                .deleted(user.getDeleted())
+                .deletedAt(user.getDeletedAt())
                 .peers(convertPeersToDto(user))
                 .build();
     }

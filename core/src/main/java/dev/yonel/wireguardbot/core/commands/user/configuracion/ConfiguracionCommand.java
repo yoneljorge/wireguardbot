@@ -141,11 +141,6 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                         .typeButton(TypeCustomButton.CALLBACKDATA)
                         .build(),
                 Button.builder()
-                        .callbackData(OPCION_ELIMINAR)
-                        .text("🗑️ Eliminar")
-                        .typeButton(TypeCustomButton.CALLBACKDATA)
-                        .build(),
-                Button.builder()
                         .callbackData(OPCION_ATRAS)
                         .text("🔙 Atras")
                         .typeButton(TypeCustomButton.CALLBACKDATA)

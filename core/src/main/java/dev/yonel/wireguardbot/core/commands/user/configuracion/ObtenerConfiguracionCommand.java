@@ -6,8 +6,10 @@ import java.util.Optional;
 import dev.yonel.wireguardbot.common.context.UserSessionContext;
 import dev.yonel.wireguardbot.common.dtos.PeerDto;
 import dev.yonel.wireguardbot.common.dtos.UserDto;
+import dev.yonel.wireguardbot.common.dtos.telegram.Button;
 import dev.yonel.wireguardbot.common.dtos.telegram.MessageBody;
 import dev.yonel.wireguardbot.common.dtos.telegram.ResponseBody;
+import dev.yonel.wireguardbot.common.enums.TypeCustomButton;
 import dev.yonel.wireguardbot.common.enums.TypeParseMode;
 import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
 import dev.yonel.wireguardbot.common.utils.HTMLMessageBuilder;
@@ -40,6 +42,13 @@ public class ObtenerConfiguracionCommand extends CommandBase implements UserComm
             createNewResponse(messageBody,
                     "❌ No se pudo encontrar tu información de usuario.");
             getCurrentResponse().setRemovable(true);
+            getCurrentResponse().setButtons(List.of(
+                    Button.builder()
+                            .text("Menu Configuración")
+                            .callbackData("/menu_configuracion")
+                            .typeButton(TypeCustomButton.CALLBACKDATA)
+                            .build()
+            ));
             return getResponses();
         }
 
