@@ -12,6 +12,7 @@ import dev.yonel.wireguardbot.common.dtos.UserDto;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardKeyPair;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeer;
 import dev.yonel.wireguardbot.common.dtos.wireguard.WireGuardPeerResponse;
+import dev.yonel.wireguardbot.common.enums.IpStatus;
 import dev.yonel.wireguardbot.common.events.MessageRelayToTelegramBotClientEvent;
 import dev.yonel.wireguardbot.common.services.database.IpDatabaseService;
 import dev.yonel.wireguardbot.common.services.database.UserDatabaseService;
@@ -167,7 +168,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
         /*
          * Obtenemos una nueva dirección ip.
          */
-        String newIpAddress = ipService.getNewIp();
+        IpDto newIpAddress = ipService.getNewIp();
         if (newIpAddress == null) {
             createNewResponse(messageBody,
                     "❌ No se pudo asignar una dirección IP. Por favor, contacta con el soporte.");
@@ -183,6 +184,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
             createNewResponse(messageBody,
                     "❌ No se pudieron generar las claves de seguridad. Por favor, intenta más tarde.");
             getCurrentResponse().setRemovable(true);
+            ipService.deleteIp(newIpAddress); // Si falla se elimina la ip
             return getResponses();
         }
 
@@ -192,9 +194,8 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
         peerDto.setPrivateKey(keyPair.getPrivateKey());
         peerDto.setPublicKey(keyPair.getPublicKey());
         peerDto.setCreatedAt(LocalDate.now());
-        IpDto ip = new IpDto();
-        ip.setIpString(newIpAddress);
-        peerDto.setIpDto(ip);
+        newIpAddress.setStatus(IpStatus.ASSIGNED);
+        peerDto.setIpDto(newIpAddress);
         if(planFree){
             /*
              * Como el plan Free es de 7 días se pone la fecha
@@ -224,7 +225,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
                  */
                 WireGuardPeer newPeer = WireGuardPeer.builder()
                         .publicKey(keyPair.getPublicKey())
-                        .allowedIp(newIpAddress)
+                        .allowedIp(newIpAddress.getIpString())
                         .build();
 
                 /*
@@ -237,6 +238,7 @@ public class CrearConfiguracionCommand extends CommandBase implements UserComman
                     createNewResponse(messageBody,
                             "❌ No se pudo agregar la configuración al servidor. Por favor, intenta más tarde." );
                     getCurrentResponse().setRemovable(true);
+                    ipService.deleteIp(newIpAddress); // En caso de que falle se elimina la ip
                     return getResponses();
                 }
                 // Crear mensaje con texto

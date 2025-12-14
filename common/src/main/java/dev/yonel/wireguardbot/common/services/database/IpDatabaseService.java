@@ -1,6 +1,9 @@
 package dev.yonel.wireguardbot.common.services.database;
 
+import dev.yonel.wireguardbot.common.dtos.IpDto;
+
 public interface IpDatabaseService {
 
-    String getNewIp();
+    IpDto getNewIp();
+    void deleteIp(IpDto ipDto);
 }

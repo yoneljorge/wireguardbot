@@ -6,15 +6,7 @@ import java.util.List;
 
 import dev.yonel.wireguardbot.common.enums.TypeRol;
 import dev.yonel.wireguardbot.core.db.crypto.SensitiveDataConverter;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,7 +18,8 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "usuarios")
+@Entity()
+@Table(name = "usuarios")
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,7 +51,8 @@ public class UserEntity {
     @Column(name = "subscription_pay_to")
     private LocalDate subscriptionPayTo;
     @Column(name = "free_plan_ended")
-    private Boolean freePlanEnded;
+    @Builder.Default
+    private Boolean freePlanEnded = false;
 
     @Builder.Default
     private Boolean active = true;

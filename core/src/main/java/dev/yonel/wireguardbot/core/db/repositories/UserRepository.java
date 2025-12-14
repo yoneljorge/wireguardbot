@@ -40,12 +40,20 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     List<UserEntity> findAllByActiveTrue();
 
     @Modifying
-    @Query("UPDATE UserEntity u SET u.active = false, u.deleted = true, u.deletedAt = CURRENT_TIMESTAMP WHERE u.id = :id")
-    int softDeleteById(@Param("id") Long id);
+    @Query("UPDATE UserEntity u " +
+            "SET u.active = false, " +
+                "u.deleted = true, " +
+                "u.deletedAt = CURRENT_TIMESTAMP " +
+            "WHERE u.id = :id")
+    void softDeleteById(@Param("id") Long id);
 
     @Modifying
-    @Query("UPDATE UserEntity u SET u.active = true, u.deleted = false, u.deletedAt = null WHERE u.user_id = :userid")
-    int reactivateByUserId(@Param("userid") Long userId);
+    @Query("UPDATE UserEntity u " +
+            "SET u.active = true, " +
+                "u.deleted = false, " +
+                "u.deletedAt = null " +
+            "WHERE u.userId = :userId")
+    int reactivateByUserId(@Param("userId") Long userId);
 
     long countByActiveTrue();
 }

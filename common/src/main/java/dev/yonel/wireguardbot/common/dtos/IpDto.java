@@ -2,6 +2,7 @@ package dev.yonel.wireguardbot.common.dtos;
 
 import java.util.Arrays;
 
+import dev.yonel.wireguardbot.common.enums.IpStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class IpDto {
 
     private Long id;
     private Integer[] ip;
+    private IpStatus status;
 
     public String getIpString() {
         if (this.ip == null || this.ip.length == 0) {

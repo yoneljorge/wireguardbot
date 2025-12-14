@@ -2,6 +2,11 @@ package dev.yonel.wireguardbot.core.db.services;
 
 import java.util.List;
 
+import dev.yonel.wireguardbot.common.dtos.IpDto;
+import dev.yonel.wireguardbot.common.enums.IpStatus;
+import jakarta.transaction.Transactional;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 import dev.yonel.wireguardbot.common.services.database.IpDatabaseService;
@@ -12,7 +17,10 @@ import dev.yonel.wireguardbot.core.db.repositories.IpRepository;
 public class IpServiceImpl implements IpDatabaseService {
 
     private final IpRepository ipRepository;
-    private final String BASE_IP_SUBNET_PREFIX = "10.0.0."; // Prefijo de la IP
+    private static final List<String> SUBNET_PREFIXES = List.of(
+            "10.0.0.",
+            "10.0.1."
+    );
     private final int MIN_IP_OCTET = 10; // Rango inferior para el último octeto
     private final int MAX_IP_OCTET = 254; // Rango superior para el último octeto
 
@@ -20,41 +28,84 @@ public class IpServiceImpl implements IpDatabaseService {
         this.ipRepository = ipRepository;
     }
 
+    @Transactional
     @Override
-    public String getNewIp() {
+    public IpDto getNewIp() {
         List<IpEntity> existingIps = ipRepository.findAllByOrderByIpAddressAsc();
 
-        int expectedOctet = MIN_IP_OCTET;
-        for (IpEntity ipEntity : existingIps) {
-            String currentIp = ipEntity.getIpAddress();
-            // Extraer el último octeto de la IP actual
-            int lastOctet = Integer.parseInt(currentIp.substring(BASE_IP_SUBNET_PREFIX.length()));
-
-            if (lastOctet == expectedOctet) {
-                expectedOctet++;
-            } else if (lastOctet > expectedOctet) {
-                // Hemos encontrado un hueco
-                String newIpAddress = BASE_IP_SUBNET_PREFIX + expectedOctet;
-                //IpEntity newIp = IpEntity.builder().ipAddress(newIpAddress).build();
-                //FIXME Verificar si es necesario guardar en base de datos
-                //ipRepository.save(newIp);
-                return newIpAddress;
+        for(String subnet : SUBNET_PREFIXES){
+            String freeIp = findFreeIpInSubnet(existingIps, subnet);
+            IpEntity savedIp;
+            if(freeIp != null){
+                // Persistimos inmediatamente para reservar la IP
+                savedIp = ipRepository.save(
+                        IpEntity.builder()
+                                .ipAddress(freeIp)
+                                .status(IpStatus.RESERVED) // Reservamos la ip
+                                .build()
+                );
+                return convertToDto(savedIp);
             }
-            // Si lastOctet < expectedOctet, significa que hay IPs duplicadas o mal ordenadas,
-            // lo cual no debería pasar con findAllByOrderByIpAddressAsc y una buena gestión de IPs.
-            // En un caso real, podrías querer registrar un error o manejarlo de otra forma.
         }
 
-        // Si llegamos aquí, significa que no hay huecos intermedios, asignamos la siguiente IP
-        // después de la última IP existente o la primera si no hay IPs.
-        if (expectedOctet <= MAX_IP_OCTET) {
-            String newIpAddress = BASE_IP_SUBNET_PREFIX + expectedOctet;
-            //IpEntity newIp = IpEntity.builder().ipAddress(newIpAddress).build();
-            //FIXME Verificar si es necesario guardar en base de datos.
-            //ipRepository.save(newIp);
-            return newIpAddress;
-        } else {
-            throw new IllegalStateException("No hay direcciones IP disponibles en el rango " + BASE_IP_SUBNET_PREFIX + MIN_IP_OCTET + " - " + BASE_IP_SUBNET_PREFIX + MAX_IP_OCTET + ".");
+        throw new IllegalStateException(
+                "No hay direcciones IP disponibles en los rangos configurados"
+        );
+    }
+
+    @Override
+    public void deleteIp(@NotNull IpDto ipDto){
+        ipRepository.deleteById(ipDto.getId());
+    }
+
+    /**
+     * Busca una IP libre dentro de una subred concreta.
+     *
+     * @param existingIps lista de ip que están en la base de datos.
+     * @param subnetPrefix prefijo de red a buscar.
+     * @return una ip que este libre o null en caso de que no halle una.
+     */
+    @Nullable
+    private String findFreeIpInSubnet(List<IpEntity> existingIps, String subnetPrefix){
+        int expectedOctet = MIN_IP_OCTET;
+
+        for(IpEntity ipEntity : existingIps){
+            String ip = ipEntity.getIpAddress();
+
+            if(ipEntity.getStatus() == IpStatus.ASSIGNED || ipEntity.getStatus() == IpStatus.RESERVED){
+                continue;
+            }
+
+            if(!ip.startsWith(subnetPrefix)){
+                continue;
+            }
+
+            int lastOctet = Integer.parseInt(ip.substring(subnetPrefix.length()));
+
+            if(lastOctet < MIN_IP_OCTET || lastOctet > MAX_IP_OCTET){
+                continue;
+            }
+
+            if(lastOctet == expectedOctet){
+                expectedOctet ++;
+            }else if(lastOctet > expectedOctet){
+                return subnetPrefix + expectedOctet;
+            }
         }
+
+        if(expectedOctet <= MAX_IP_OCTET){
+            return subnetPrefix + expectedOctet;
+        }
+
+        return null; // subnet full
+    }
+
+    @NotNull
+    private IpDto convertToDto(IpEntity entity){
+        IpDto ipDto = new IpDto();
+        ipDto.setId(entity.getId());
+        ipDto.setIpString(entity.getIpAddress());
+        ipDto.setStatus(entity.getStatus());
+        return ipDto;
     }
 }
