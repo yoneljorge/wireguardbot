@@ -176,8 +176,10 @@ public class BaseTelegramWebhookBot extends TelegramWebhookBot implements Messag
             handleResponse(convertToObject(telegramPlatform.receivedRequestMessageFromPrivate(bot, update, null)), bot);
         } catch (TelegramApiException e) {
             log.error("Error al procesar CallbackQuery: {}", e.getMessage(), e);
+            e.printStackTrace();
         } catch (Throwable e) {
             log.error("Error en telegramPlatform.receivedFromButtons (callback): {}", e.getMessage(), e);
+            e.printStackTrace();
         }
     }
 

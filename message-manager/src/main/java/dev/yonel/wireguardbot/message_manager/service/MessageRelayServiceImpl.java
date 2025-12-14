@@ -117,6 +117,7 @@ public class MessageRelayServiceImpl implements MessageRelayService {
                     usuarioService.updateUser(userOptional.get());
                 } catch (Exception e) {
                     log.error("Error en MessageRelayService.handleRegisteredUser: {}", e.getMessage());
+                    e.printStackTrace();
                 }
             } else {
                 log.error("Error actualizando al usuario. No se pudo construir el usuario actualizado.");
@@ -196,21 +197,22 @@ public class MessageRelayServiceImpl implements MessageRelayService {
         if (userOptional.isPresent()) {
             UserDto user = userOptional.get();
             try {
-                if (!messageBody.getFirstName().isBlank()) {
+                if (messageBody.getFirstName() != null && !messageBody.getFirstName().isBlank()) {
                     user.setFirstName(messageBody.getFirstName());
                 }
 
-                if (!messageBody.getLastName().isBlank()) {
+                if (messageBody.getLastName() != null && !messageBody.getLastName().isBlank()) {
                     user.setLastName(messageBody.getLastName());
                 }
 
-                if (!messageBody.getUserName().isBlank()) {
+                if (messageBody.getUserName() != null && !messageBody.getUserName().isBlank()) {
                     user.setUserName(messageBody.getUserName());
                 }
 
                 return Optional.ofNullable(user);
             } catch (Exception e) {
                 log.error("Error in MessageRelayService.buildUserFromNewInformation: {}", e.getMessage());
+                e.printStackTrace();
                 throw new Throwable();
             }
         } else {
