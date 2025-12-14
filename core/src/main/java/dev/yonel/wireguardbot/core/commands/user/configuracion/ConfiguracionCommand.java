@@ -37,8 +37,6 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
     private final String[] CREAR_ALIASES = CrearConfiguracionCommand.ALIASES;
     private final String OPCION_OBTENER = ObtenerConfiguracionCommand.NAME;
     private final String[] OBTENER_ALIASES = ObtenerConfiguracionCommand.ALIASES;
-    private final String OPCION_ELIMINAR = EliminarConfiguracionCommand.NAME;
-    private final String[] ELIMINAR_ALIASES = EliminarConfiguracionCommand.ALIASES;
 
     @Override
     public List<ResponseBody> execute(MessageBody messageBody, UserSessionContext context) throws Throwable {
@@ -99,11 +97,6 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
                     break;
                 }
 
-                case OPCION_ELIMINAR -> {
-                    addResponses(commandFactory.getCommand(EliminarConfiguracionCommand.NAME).execute(messageBody, context));
-                    break;
-                }
-
                 default -> {
                     createNewResponse(messageBody, NoEntendiMessages.noEntendi());
                     getCurrentResponse().setRemovable(true);
@@ -160,10 +153,6 @@ public class ConfiguracionCommand extends CommandBase implements UserCommandInte
         Map<String, String[]> mapObtener = new HashMap<>();
         mapObtener.put(OPCION_OBTENER, OBTENER_ALIASES);
         opciones.add(mapObtener);
-
-        Map<String, String[]> mapEliminar = new HashMap<>();
-        mapEliminar.put(OPCION_ELIMINAR, ELIMINAR_ALIASES);
-        opciones.add(mapEliminar);
 
         String option = Match.findBestMatch(text, opciones);
         if (option == null) {
